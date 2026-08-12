@@ -1,3 +1,6 @@
+<img width="1734" height="154" alt="image" src="https://github.com/user-attachments/assets/d3ad610c-379c-4225-9eb5-dc5dec5f58d7" />
+
+
 # wrapped.gg
 
 A year-in-review for any Minecraft server, like the one your music app sends you
@@ -89,3 +92,5 @@ There is no container and no server to keep alive.
 - Stats files from Minecraft 1.7 onwards, including the numeric block ids and
   dotted key names that predate 1.13.
 - No third-party scripts on any page.
+
+### This readme was generated with the help of AI.
