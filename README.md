@@ -91,4 +91,4 @@ There is no container and no server to keep alive.
   dotted key names that predate 1.13.
 - No third-party scripts on any page.
 
-### This readme was generated with the help of AI.
+### Some parts of wrapped.gg were created with the use of prompt engineering.
