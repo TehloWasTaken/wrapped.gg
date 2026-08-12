@@ -1,7 +1,5 @@
-<img width="1734" height="154" alt="image" src="https://github.com/user-attachments/assets/d3ad610c-379c-4225-9eb5-dc5dec5f58d7" />
+# <img width="1734" height="154" alt="image" src="https://github.com/user-attachments/assets/d3ad610c-379c-4225-9eb5-dc5dec5f58d7" />
 
-
-# wrapped.gg
 
 A year-in-review for any Minecraft server, like the one your music app sends you
 in December. Every player gets a page of their own year: hours played, blocks
