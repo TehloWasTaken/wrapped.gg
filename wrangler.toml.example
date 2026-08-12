@@ -1,0 +1,57 @@
+name = "wrapped-gg"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[limits]
+cpu_ms = 30_000
+
+[assets]
+directory = "./web"
+binding = "ASSETS"
+run_worker_first = [
+  "/", "/index.html",
+  "/panel", "/panel.html", "/upload", "/upload.html",
+  "/docs", "/docs.html", "/hosts", "/hosts.html",
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wrapped"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "wrapped-data"
+
+[[queues.producers]]
+binding = "BUILD_QUEUE"
+queue = "wrapped-builds"
+
+[[queues.consumers]]
+queue = "wrapped-builds"
+max_batch_size = 1
+max_retries = 3
+dead_letter_queue = "wrapped-builds-dlq"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "00000000000000000000000000000000"
+
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "wrapped_events"
+
+[vars]
+SITE_URL = "https://example.com"
+DISCORD_CLIENT_ID = ""
+
+# scripts/provision.sh creates the D1 database, the KV namespace, the bucket and
+# the queues, and prints the two ids that go above.
+#
+# Secrets, set with `wrangler secret put NAME`:
+#   DISCORD_CLIENT_SECRET   from the Discord developer portal
+#   SESSION_SECRET          any long random string
+#   METRICS_TOKEN           bearer token for /metrics; without it /metrics 404s
+#   CF_ACCOUNT_ID           optional, for the Analytics Engine SQL API
+#   CF_ANALYTICS_TOKEN      optional, account-scoped, Analytics read only

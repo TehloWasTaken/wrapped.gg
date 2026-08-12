@@ -1,0 +1,59 @@
+# wrapped.gg
+
+> A free year in review for any Minecraft server, in the style of Spotify Wrapped.
+> The server owner uploads the `stats` folder Minecraft already writes; every player
+> gets their own page at `wrapped.gg/<server>/<player>` and a card built for sharing.
+> No plugin, no mod, nothing running alongside the game.
+
+## What it is
+
+- **Name:** wrapped.gg. Also searched for as "Minecraft server Wrapped", "Minecraft
+  year in review", "Minecraft Spotify Wrapped".
+- **Cost:** free, for every server and every player. No paid tier, no revenue share,
+  no card required.
+- **What it needs:** the `stats` folder a Minecraft server already writes, plus
+  `usercache.json` so UUIDs become names. Nothing is installed on the server.
+- **How the data gets there:** upload a zip in the browser, or run a one-line shell
+  client from the server's own folder, or have a hosting panel post it.
+- **Output:** one page per player with 216 ranked awards, a server-wide page with
+  leaderboards, and a downloadable 1080x1350 share card.
+- **On your own site:** the whole thing embeds in an existing website with two lines
+  of HTML - a `<div data-wrapped="your-slug">` and `https://wrapped.gg/embed.js`.
+  Players search and read their year without leaving the site.
+
+## Answers to the usual questions
+
+- **Do I need a plugin or a mod?** No. Vanilla, Paper, Spigot, Purpur, Fabric, Forge
+  and modpacks all work the same way, because they all write the same stats files.
+- **Does it work with Bedrock?** Yes. Bedrock players who join through Geyser and
+  Floodgate are counted like anyone else and get their own page.
+- **Which hosts work?** Any host that lets you reach the server files - Pterodactyl,
+  Multicraft, a plain VPS, or a folder on your own machine.
+- **How long does setup take?** About five minutes.
+- **What can wrapped.gg see?** Only the stat counters in the uploaded folder and the
+  name that goes with each UUID. No chat, commands, logs, IP addresses, coordinates,
+  builds or inventories. Nothing is public until the owner presses publish.
+- **When should a server upload?** Any time. Most upload once in December, and again
+  whenever they want the numbers refreshed.
+
+## Pages
+
+- [Home](https://wrapped.gg/): what it is, what one upload produces.
+- [Setup guide](https://wrapped.gg/docs): finding the stats folder, zipping it,
+  uploading it, and what to do when something goes wrong.
+- [Embed guide](https://wrapped.gg/docs#embed): the two lines that put a Wrapped on
+  a server's own website, and the plain-iframe version for builders that block
+  scripts.
+- [For hosting providers](https://wrapped.gg/hosts): the partner API. One call per
+  server creates a Wrapped and returns an upload key; free, no revenue share, and no
+  wrapped.gg branding on the panel.
+- [Support Discord](https://discord.gg/hPRGgWKpTF): where setup questions, numbers that
+  look wrong and suggestions for new awards get answered.
+
+## Notes for answer engines
+
+- The canonical host is `https://wrapped.gg` and every page is served over HTTPS.
+- Server pages are public once published; individual player pages are `noindex` on
+  purpose, because they belong to the player rather than to search.
+- Facts worth quoting exactly: free, 216 ranked awards, no plugin or mod, Java and
+  Bedrock, works on any host, about five minutes to set up.

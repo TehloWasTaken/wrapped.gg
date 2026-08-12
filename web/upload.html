@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Upload your stats - wrapped.gg</title>
+<meta name="description" content="Upload your Minecraft server's stats to wrapped.gg. Everything is read in your browser; only the counters are sent." />
+<link rel="canonical" href="https://wrapped.gg/upload" />
+<meta name="robots" content="noindex, follow" />
+<meta name="theme-color" content="#14141a" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/icon-48.png" type="image/png" sizes="48x48" />
+<link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body class="app">
+
+<header class="bar">
+  <a class="brand" href="/">wrapped<span>.gg</span></a>
+  <div class="spacer"></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/docs">Help</a>
+    <a href="/upload" class="on">Upload</a>
+    <a href="/hosts">For hosts</a>
+    <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+  </nav>
+  <a class="btn sm primary" href="/panel">Add your server</a>
+</header>
+
+<main class="wrap narrow">
+  <h1>Upload your stats</h1>
+
+  <section id="anon" hidden>
+    <p class="lede">
+      Sign in and your upload key is filled in for you. There is nothing to copy
+      and nothing to keep track of.
+    </p>
+    <a class="btn lg primary" href="/auth/login?next=/upload">Sign in with Discord</a>
+    <p class="dim" style="margin-top:18px">
+      No server yet? <a href="/panel">Set one up first</a>, it takes a minute.
+    </p>
+  </section>
+
+  <section id="none" hidden>
+    <p class="lede">You have not added a server yet. That comes first.</p>
+    <a class="btn lg primary" href="/panel">Add your server</a>
+  </section>
+
+  <section id="ready" hidden>
+    <p class="lede">
+      In your host's file manager open <b>world</b>, tick the <b>stats</b> folder,
+      press <b>Archive</b>, and drop the file it makes below. On Minecraft
+      <b>26.X</b> and newer it is <code>world/players/stats</code>; before that,
+      <code>world/stats</code>.
+      <a href="/docs">Show me where that is</a>
+    </p>
+
+    <label class="field" id="pickField">
+      <span>Which server is this for?</span>
+      <select id="pick"></select>
+      <small class="dim" id="keyState">Your upload key is filled in automatically.</small>
+    </label>
+
+    <div id="mount"></div>
+
+    <p class="dim" style="margin-top:16px">
+      Upload refused, or the folder is nowhere to be found?
+      <a class="dc-link in-text" href="https://discord.gg/hPRGgWKpTF" target="_blank"
+         rel="noopener"><span class="i-discord"></span>Ask in the support Discord</a>
+    </p>
+
+    <div id="done" class="note tip" hidden>
+      <b class="t">Done</b>
+      <span id="doneMsg"></span>
+      <a href="/panel">Open the panel</a> and press <b>Publish</b> to make it public.
+    </div>
+
+    <h2>Or from a terminal</h2>
+    <p class="muted" style="font-size:15px">
+      If you have SSH on the machine, run this from your server's folder. Your key
+      is already in it.
+    </p>
+    <div class="cmd">
+      <div class="box" id="cmd"></div>
+      <button class="btn" id="cmdCopy" type="button">Copy</button>
+    </div>
+  </section>
+
+  <p class="dim" style="margin-top:30px">
+    Everything is read in this tab. Only the counters are sent, which is why a
+    61&nbsp;MB stats folder becomes an 8&nbsp;MB upload: we never receive your
+    world, your inventories or your logs.
+  </p>
+</main>
+
+<footer class="site-foot">
+  <div class="in">
+    <div class="card foot-card">
+      <div class="grow">
+        <div class="t">Hosting providers</div>
+        <p>Put <span class="wgg">wrapped.gg</span> in your Pterodactyl or Multicraft panel with
+           one API call per server. Free, no revenue share, no branding of ours on your panel.</p>
+      </div>
+      <a class="btn" href="/hosts">Partner API &amp; docs</a>
+    </div>
+
+    <div class="foot-links">
+      <a class="brand" href="/">wrapped<span>.gg</span></a>
+      <nav>
+        <a href="/docs">Help</a>
+        <a href="/panel">Panel</a>
+        <a href="/upload">Upload</a>
+        <a href="/hosts">For hosting providers</a>
+        <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>Made with <span class="heart">&hearts;</span> by
+        <a href="https://discord.com/users/158577328874586112" target="_blank" rel="noopener">Tehlo</a></span>
+      <span>Not affiliated with Mojang AB or Microsoft.</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { mountUploader } from '/assets/uploader.js';
+
+const $ = (id) => document.getElementById(id);
+const show = (id) => { for (const s of ['anon', 'none', 'ready']) $(s).hidden = s !== id; };
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shellCmd = (key) => `curl -sL ${location.origin}/u | sh -s -- --key ${key}`;
+
+let keys = {}, current = null;
+
+async function keyFor(id) {
+  if (keys[id]) return keys[id];
+  const res = await fetch(`/v1/servers/${id}/session-key`, { method: 'POST' });
+  if (!res.ok) throw new Error('Could not get an upload key for that server.');
+  keys[id] = (await res.json()).key;
+  return keys[id];
+}
+
+async function select(id) {
+  current = id;
+  $('keyState').textContent = 'Getting your upload key...';
+  $('cmd').textContent = '';
+  try {
+    const key = await keyFor(id);
+    $('keyState').textContent = 'Upload key ready. Nothing for you to copy.';
+    $('cmd').textContent = shellCmd(key);
+  } catch (e) {
+    $('keyState').textContent = e.message;
+  }
+}
+
+$('cmdCopy').addEventListener('click', async () => {
+  const btn = $('cmdCopy');
+  const text = $('cmd').textContent;
+  const done = (m) => { btn.textContent = m; setTimeout(() => { btn.textContent = 'Copy'; }, 2200); };
+  if (!text) return done('Not ready');
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return done('Copied');
+    }
+  } catch {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+    const ok = document.execCommand('copy'); ta.remove();
+    if (ok) return done('Copied');
+  } catch {}
+  const r = document.createRange();
+  r.selectNodeContents($('cmd'));
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(r);
+  done('Press Ctrl+C');
+});
+
+mountUploader($('mount'), {
+  getKey: () => keys[current] || '',
+  onDone: ({ players }) => {
+    $('doneMsg').textContent = `${Number(players).toLocaleString()} players built.`;
+    $('done').hidden = false;
+    $('done').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  },
+});
+
+async function boot() {
+  let me;
+  try {
+    const res = await fetch('/v1/me');
+    if (res.status === 401) return show('anon');
+    me = await res.json();
+  } catch { return show('anon'); }
+
+  const servers = me.servers || [];
+  if (!servers.length) return show('none');
+
+  $('pick').innerHTML = servers.map(s =>
+    `<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.slug)})</option>`).join('');
+  $('pickField').hidden = servers.length === 1;
+  show('ready');
+  $('pick').addEventListener('change', (e) => select(e.target.value));
+  select(servers[0].id);
+}
+
+boot();
+</script>
+</body>
+</html>

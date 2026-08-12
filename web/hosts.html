@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<title>Minecraft Wrapped for hosting providers - Pterodactyl and Multicraft</title>
+<meta name="description" content="Put a Minecraft Wrapped in your Pterodactyl or Multicraft panel. One API call per server creates it and returns an upload key. Free, no revenue share, no branding of ours." />
+<link rel="canonical" href="https://wrapped.gg/hosts" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="theme-color" content="#3ecf72" />
+<meta name="color-scheme" content="dark" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="wrapped.gg" />
+<meta property="og:title" content="wrapped.gg for hosting providers" />
+<meta property="og:description" content="One API call per server. Your customers press a button in your panel and get a year in review for every player - no key, no plugin, no support ticket." />
+<meta property="og:url" content="https://wrapped.gg/hosts" />
+<meta property="og:image" content="https://wrapped.gg/og.png?v=f30ad696" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="wrapped.gg for hosting providers" />
+<meta name="twitter:description" content="One API call per server. Your customers press a button and get a year in review for every player." />
+<meta name="twitter:image" content="https://wrapped.gg/og.png?v=f30ad696" />
+
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/icon-48.png" type="image/png" sizes="48x48" />
+<link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="stylesheet" href="/assets/app.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://wrapped.gg/hosts#webpage",
+      "url": "https://wrapped.gg/hosts",
+      "name": "Minecraft Wrapped for hosting providers",
+      "description": "Put wrapped.gg in a Pterodactyl or Multicraft panel with one API call per server. Free, no revenue share, no branding of ours on your panel.",
+      "isPartOf": {
+        "@id": "https://wrapped.gg/#website"
+      },
+      "breadcrumb": {
+        "@id": "https://wrapped.gg/hosts#breadcrumb"
+      },
+      "about": {
+        "@id": "https://wrapped.gg/#app"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://wrapped.gg/hosts#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "wrapped.gg",
+          "item": "https://wrapped.gg/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "For hosting providers",
+          "item": "https://wrapped.gg/hosts"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://wrapped.gg/hosts#faq",
+      "isPartOf": {
+        "@id": "https://wrapped.gg/#website"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does anything get installed on the game server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. There is no plugin, no mod and no agent. The shell client is a single script that runs, reads files the server already wrote, posts them and exits. Nothing is left behind and nothing has to keep step with Minecraft versions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nothing, for you or your customers. There is no revenue share, no per-server fee and no paid tier to upsell. If that ever changes, servers already created keep working."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I white-label it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Half of it. Your panel is yours - call the button what you like, no attribution required. The Wrapped page itself carries the customer's name and icon, not ours, but the share cards end on \"make your own free at wrapped.gg\", and that line stays: it is the only distribution this has."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A customer moved hosts. What happens to their page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If they claimed it, nothing - it is theirs, the URL is unchanged, and they can keep uploading from the panel or the shell. If they never claimed it, generate a claim link and send it to them on the way out. Please do that rather than deleting it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Modded, proxied and Bedrock servers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All fine. It reads files, so the loader is irrelevant - Vanilla, Paper, Purpur, Fabric, Forge, NeoForge. Behind a BungeeCord or Velocity proxy, point it at each backend server's own folder; each one has its own stats. Geyser and Floodgate players are included and can search their name with or without the prefix."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I test without touching a real customer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - create one with an external_id like test-1 and \"published\": false, upload your own world's stats to it, look at the page, then DELETE it. Nothing is public until you publish, and the delete removes every upload and build with it."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+
+<style>
+.hero-h { padding: 26px 0 8px; }
+.hero-h h1 { font-size: 30px; margin-bottom: 12px; }
+@media (min-width: 720px) { .hero-h h1 { font-size: 38px; } }
+.hero-h .lede { margin-bottom: 22px; }
+.hero-h .row { gap: 12px; }
+
+.doc { display: grid; gap: 34px; }
+.doc > * { min-width: 0; }
+@media (min-width: 1040px) { .doc { grid-template-columns: 210px 1fr; gap: 44px; align-items: start; } }
+.toc { display: none; }
+@media (min-width: 1040px) {
+  .toc { display: block; position: sticky; top: 92px; padding: 16px 18px; }
+  .toc b { display: block; font-family: 'Pixel', monospace; -webkit-font-smoothing: none;
+    font-size: 13px; color: var(--dim); margin-bottom: 10px; }
+  .toc a { display: block; font-size: 14px; color: var(--muted); padding: 4px 0; }
+  .toc a:hover { color: var(--text); text-decoration: none; }
+}
+
+.ep {
+  margin: 26px 0 10px; padding: 12px 14px;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  scroll-margin-top: 96px;
+}
+.ep .m {
+  font: 600 12px/1 var(--sans); letter-spacing: .6px; padding: 6px 9px;
+  color: var(--on-green); background: var(--green); flex: 0 0 auto;
+}
+.ep .m.get { background: var(--aqua); color: #04222a; }
+.ep .m.del { background: #ff8b8b; color: #2a0b0b; }
+.ep .m.patch { background: var(--gold); color: #2a1f04; }
+.ep .p { font: 14.5px/1.4 var(--mono); color: var(--text); word-break: break-all; }
+.ep .n { flex-basis: 100%; font-size: 14px; color: var(--muted); }
+
+pre {
+  font: 13px/1.75 var(--mono); background: var(--inset); color: #d8d8e2;
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+  padding: 14px 16px; margin: 14px 0; overflow-x: auto;
+}
+pre b { color: var(--green-hi); font-weight: 400; }
+pre i { color: var(--dim); font-style: normal; }
+pre u { color: var(--yellow); text-decoration: none; }
+
+.tag {
+  display: inline-block; font-size: 11px; letter-spacing: .5px; padding: 3px 8px 2px;
+  background: var(--green); color: var(--on-green); vertical-align: middle;
+}
+.tag.soft { background: var(--panel); color: var(--muted); border: 2px solid var(--line); }
+
+.flow { display: grid; gap: 12px; margin: 22px 0; }
+@media (min-width: 860px) { .flow { grid-template-columns: repeat(3, 1fr); } }
+.flow .f { padding: 16px 18px; }
+.flow .f b { display: block; font-family: 'Pixel', monospace; -webkit-font-smoothing: none;
+  font-size: 14px; margin-bottom: 6px; }
+.flow .f p { font-size: 14.5px; color: var(--muted); margin: 0; }
+.flow .f code { font-size: 12.5px; }
+
+details {
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+  background: var(--panel); margin-bottom: 8px;
+}
+details > summary {
+  cursor: pointer; padding: 13px 16px; list-style: none;
+  font-family: 'Pixel', monospace; -webkit-font-smoothing: none; font-size: 14.5px;
+  display: flex; gap: 12px; align-items: center;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: '+'; color: var(--green-hi); flex: 0 0 auto; }
+details[open] > summary::before { content: '\2212'; }
+details > summary:hover { background: rgba(255,255,255,.04); }
+details .body { padding: 0 16px 16px; color: var(--muted); font-size: 15px; }
+details .body :last-child { margin-bottom: 0; }
+
+table td code { white-space: nowrap; }
+.req { color: var(--gold); font-size: 12px; }
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  details, .ep, .toc {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  }
+  pre { background: var(--glass-in); }
+}
+.ep, .toc {
+  background: var(--panel);
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+}
+</style>
+</head>
+<body class="app">
+
+<header class="bar">
+  <a class="brand" href="/">wrapped<span>.gg</span></a>
+  <div class="spacer"></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/docs">Help</a>
+    <a href="/upload">Upload</a>
+    <a href="/hosts" class="on">For hosts</a>
+    <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+  </nav>
+  <a class="btn sm primary" href="#token">Get a token</a>
+</header>
+
+<main class="wrap">
+
+<div class="hero-h">
+  <p class="dim" style="font-family:'Pixel',monospace;-webkit-font-smoothing:none;color:var(--green-hi)">
+    For hosting providers</p>
+  <h1>Put <span class="wgg">wrapped.gg</span> in your panel</h1>
+  <p class="lede">
+    Your customers already have the data. This turns it into a year in review for
+    every player on their server, from a button in your own panel - no plugin, no
+    Discord login, no key for them to copy, no support ticket for you. One API
+    call creates a Wrapped and hands you an upload key; a scheduled task sends
+    the stats. <b>Free, no revenue share, and none of our branding on your panel.</b>
+  </p>
+  <div class="row">
+    <a class="btn primary" href="#quickstart">Quick start</a>
+    <a class="btn" href="#reference">API reference</a>
+    <a class="btn" href="#panels">Pterodactyl &amp; Multicraft</a>
+  </div>
+</div>
+
+<hr class="rule" />
+
+<div class="doc">
+  <aside class="toc">
+    <b>ON THIS PAGE</b>
+    <a href="#why">Why offer it</a>
+    <a href="#quickstart">Quick start</a>
+    <a href="#token">Getting a token</a>
+    <a href="#stats-folder">Where the stats live</a>
+    <a href="#reference">API reference</a>
+    <a href="#uploading">Uploading snapshots</a>
+    <a href="#cadence">How often to send</a>
+    <a href="#claiming">Claim links</a>
+    <a href="#panels">Panel recipes</a>
+    <a href="#limits">Limits &amp; errors</a>
+    <a href="#rules">What we ask of you</a>
+    <a href="#faq">FAQ</a>
+  </aside>
+
+  <div>
+
+  <h2 id="why">Why a host would offer this</h2>
+  <p class="muted" style="font-size:15.5px;max-width:66ch">
+    A Wrapped is the one thing a Minecraft server posts in December that its
+    players actually forward. Every one of those cards carries the server's name
+    and icon, and the players who see it go looking for the server that made it.
+    For you it is a feature nobody else in your market has, it costs you one
+    scheduled task per server, and there is nothing to install into the game.
+  </p>
+
+  <div class="flow">
+    <div class="card f">
+      <b>1 · Create</b>
+      <p>One <code>POST</code> when a customer switches it on. You get back their
+         public URL and an upload key.</p>
+    </div>
+    <div class="card f">
+      <b>2 · Send stats</b>
+      <p>A scheduled task on the server runs our one-line shell client, or your
+         panel posts the folder itself. Twice a year is enough.</p>
+    </div>
+    <div class="card f">
+      <b>3 · Hand it over</b>
+      <p>Show the customer their link and a claim URL, and they own the page from
+         then on.</p>
+    </div>
+  </div>
+
+  <h2 id="quickstart">Quick start</h2>
+  <p class="muted">Three calls, start to finish. Everything else on this page is detail.</p>
+
+  <pre><i># 1 · does my token work</i>
+curl https://wrapped.gg/v1/host/ping \
+  -H "Authorization: Bearer <u>wgg_host_yourtoken</u>"
+
+<i># 2 · create a Wrapped for one customer's server</i>
+curl -X POST https://wrapped.gg/v1/host/servers \
+  -H "Authorization: Bearer <u>wgg_host_yourtoken</u>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Bobs SMP","external_id":"<u>ptero-1a2b3c</u>"}'
+
+<i># → { "slug": "bobs-smp-k7m2p",</i>
+<i>#     "url": "https://wrapped.gg/bobs-smp-k7m2p",</i>
+<b>#     "upload_key": "wgg_live_…",</b>
+<i>#     "claim_url": "https://wrapped.gg/claim/…" }</i>
+
+<i># 3 · send the stats, from the game server's own folder</i>
+curl -sL https://wrapped.gg/u | sh -s -- --key <u>wgg_live_…</u></pre>
+
+  <div class="note tip">
+    <b class="t">That third line is the whole integration</b>
+    It finds the world itself, reads the stats folder, flattens a 61&nbsp;MB
+    folder into an 8&nbsp;MB upload in the client, and never touches the running
+    server - it is safe with players online. Needs <code>curl</code> and
+    <code>python3</code>, both of which are already in every Pterodactyl egg.
+  </div>
+
+  <h2 id="token">Getting a partner token</h2>
+  <p class="muted" style="max-width:66ch">
+    Partner tokens are issued by hand, because we would like to know who is
+    sending us other people's data. Message
+    <a href="https://discord.com/users/158577328874586112" target="_blank" rel="noopener">Tehlo on Discord</a>
+    with your company name, your panel software, and roughly how many servers you
+    expect to enable it for. It is free, and there is no contract to sign.
+  </p>
+  <p class="muted">Your token looks like <code>wgg_host_</code> followed by 48 characters, and it:</p>
+  <ul class="ticks" style="margin:14px 0 18px">
+    <li>authenticates every call under <code>/v1/host</code> and nothing else</li>
+    <li>is stored as a hash, so we cannot show it to you again - keep it in your
+        panel's secret store, not in an egg variable a customer can read</li>
+    <li>can be rotated or revoked by asking, and takes effect immediately</li>
+  </ul>
+  <div class="note stop">
+    <b class="t">Never put a partner token on a game server</b>
+    It can create and delete Wrapped pages for every customer you have. The
+    per-server <code>wgg_live_</code> upload key is the one that belongs on the
+    machine - it can do exactly one thing, for exactly one server.
+  </div>
+
+  <h2 id="stats-folder">Where the stats folder lives</h2>
+  <p class="muted" style="max-width:66ch">
+    Minecraft writes one JSON file per player. Where it puts them changed
+    recently, and if you are building your own uploader you need to handle both:
+  </p>
+  <div class="table-scroll">
+    <table class="stack prose">
+      <thead><tr><th>Minecraft version</th><th>Path</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td data-label="Version"><b>26.X and newer</b></td>
+          <td data-label="Path"><code>world/players/stats/&lt;uuid&gt;.json</code></td>
+          <td data-label="Note">Per-player files moved under a <code>players</code> folder</td>
+        </tr>
+        <tr>
+          <td data-label="Version">25.X and older</td>
+          <td data-label="Path"><code>world/stats/&lt;uuid&gt;.json</code></td>
+          <td data-label="Note">Still the path on most servers running today</td>
+        </tr>
+        <tr>
+          <td data-label="Version">Any</td>
+          <td data-label="Path"><code>usercache.json</code></td>
+          <td data-label="Note">Server root, next to <code>server.properties</code>. Turns UUIDs into names.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="max-width:66ch">
+    <code>world</code> is whatever <code>level-name</code> in
+    <code>server.properties</code> says it is, and the <code>_nether</code> and
+    <code>_the_end</code> folders never contain stats. Our shell client resolves
+    all of this itself - it checks <code>world/players/stats</code> first, falls
+    back to <code>world/stats</code>, and searches from the server root if
+    neither exists. If you write your own uploader, do the same in that order.
+  </p>
+
+  <h2 id="reference">API reference</h2>
+  <p class="muted">
+    Base URL <code>https://wrapped.gg</code>. Everything is JSON, and every call
+    carries <code>Authorization: Bearer wgg_host_…</code>. Errors come back as
+    <code>{ "error": "code", "message": "..." }</code> with a matching status.
+  </p>
+
+  <div class="ep" id="ep-ping">
+    <span class="m get">GET</span><span class="p">/v1/host/ping</span>
+    <span class="n">Checks your token and reports how many servers you have created.</span>
+  </div>
+<pre>{ "ok": true,
+  "partner": { "name": "BlockHost", "slug": "blockhost" },
+  "servers": 412,
+  "max_servers": 10000 }</pre>
+
+  <div class="ep" id="ep-create">
+    <span class="m">POST</span><span class="p">/v1/host/servers</span>
+    <span class="n">Creates a Wrapped. <b>Idempotent</b> on <code>external_id</code>, so it is
+      safe to retry and safe to call from a button a customer can double-click.</span>
+  </div>
+  <div class="table-scroll">
+    <table class="stack prose">
+      <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Field"><code>name</code> <span class="req">required</span></td>
+            <td data-label="Type">string, 2-48</td>
+            <td data-label="Meaning">The server's name, as the customer would write it. Shown on the page and on every share card.</td></tr>
+        <tr><td data-label="Field"><code>external_id</code> <span class="req">required</span></td>
+            <td data-label="Type">string, 1-64</td>
+            <td data-label="Meaning">Your own id for the server - the Pterodactyl UUID, the Multicraft id, whatever you already have. This is the idempotency key, and it is how you can address the server later without storing anything of ours.</td></tr>
+        <tr><td data-label="Field"><code>slug</code></td>
+            <td data-label="Type">string, 2-24</td>
+            <td data-label="Meaning">The readable part of the URL. Defaults to the name. A random five-character suffix is always appended, so nobody finds a customer's page by guessing.</td></tr>
+        <tr><td data-label="Field"><code>description</code></td>
+            <td data-label="Type">string, ≤280</td>
+            <td data-label="Meaning">One line, used when the link unfurls in Discord.</td></tr>
+        <tr><td data-label="Field"><code>published</code></td>
+            <td data-label="Type">boolean</td>
+            <td data-label="Meaning">Defaults to <code>true</code>. Pass <code>false</code> to build privately and publish later.</td></tr>
+        <tr><td data-label="Field"><code>rotate_key</code></td>
+            <td data-label="Type">boolean</td>
+            <td data-label="Meaning">Only read when the <code>external_id</code> already exists. Issues a fresh upload key and revokes the previous panel key.</td></tr>
+      </tbody>
+    </table>
+  </div>
+<pre><i>// 201 Created</i>
+{ "server_id": "01jd2…",
+  "external_id": "ptero-1a2b3c",
+  "name": "Bob's SMP",
+  "slug": "bobs-smp-k7m2p",
+  "url": "https://wrapped.gg/bobs-smp-k7m2p",
+  "published": true,
+  "claimed": false,
+  "created": true,
+  <b>"upload_key": "wgg_live_…",</b>          <i>// shown once. store it.</i>
+  "claim_url": "https://wrapped.gg/claim/…",
+  "claim_expires_at": 1801234567,
+  "upload": {
+    "endpoint": "https://wrapped.gg/v1/snapshots",
+    "shell": "curl -sL https://wrapped.gg/u | sh -s -- --key wgg_live_…"
+  } }</pre>
+  <p class="muted small">
+    Call it again with the same <code>external_id</code> and you get
+    <code>200</code> with <code>"created": false</code> and
+    <code>"upload_key": null</code> - the existing Wrapped, unchanged, and no key
+    churn for a cron that is already running. Add <code>"rotate_key": true</code>
+    when you genuinely need a new one.
+  </p>
+
+  <div class="ep" id="ep-get">
+    <span class="m get">GET</span><span class="p">/v1/host/servers/:ref</span>
+    <span class="n">One server, plus how its last upload went. <code>:ref</code> is our
+      <code>server_id</code> or <code>ext:&lt;your external_id&gt;</code>.</span>
+  </div>
+<pre>curl "https://wrapped.gg/v1/host/servers/<u>ext:ptero-1a2b3c</u>" \
+  -H "Authorization: Bearer <u>wgg_host_yourtoken</u>"
+
+{ "server_id": "01jd2…", "slug": "bobs-smp-k7m2p",
+  "published": true, "claimed": false,
+  "players": 3244, "built_at": 1801230000,
+  "last_snapshot": { "id": "01jd3…", <b>"state": "ready"</b>, "error": null,
+                     "players": 3244, "bytes": 8123456,
+                     "received_at": 1801229800, "built_at": 1801230000 } }</pre>
+  <p class="muted small">
+    <code>state</code> is <code>queued</code>, <code>building</code>,
+    <code>ready</code> or <code>failed</code>. On <code>failed</code>,
+    <code>error</code> is a sentence you can show a customer as-is.
+  </p>
+
+  <div class="ep" id="ep-list">
+    <span class="m get">GET</span><span class="p">/v1/host/servers?limit=50&amp;before=&lt;created_at&gt;</span>
+    <span class="n">Everything you have created, newest first. Page with
+      <code>next_before</code> until it comes back null.</span>
+  </div>
+
+  <div class="ep" id="ep-patch">
+    <span class="m patch">PATCH</span><span class="p">/v1/host/servers/:ref</span>
+    <span class="n"><code>name</code>, <code>description</code>, <code>published</code>.
+      Refused with <code>409 claimed</code> once a customer has taken the server over.</span>
+  </div>
+
+  <div class="ep" id="ep-key">
+    <span class="m">POST</span><span class="p">/v1/host/servers/:ref/key</span>
+    <span class="n">Rotates the upload key. The previous panel key stops working
+      immediately - this is what you call after a leak or a cancellation.</span>
+  </div>
+
+  <div class="ep" id="ep-claim">
+    <span class="m">POST</span><span class="p">/v1/host/servers/:ref/claim</span>
+    <span class="n">A fresh single-use claim link, for the customer who lost the first one.</span>
+  </div>
+
+  <div class="ep" id="ep-delete">
+    <span class="m del">DELETE</span><span class="p">/v1/host/servers/:ref</span>
+    <span class="n">Removes the server and every upload, build and player page with it.
+      Refused with <code>409 claimed</code> once a customer owns it.</span>
+  </div>
+
+  <h2 id="uploading">Sending the stats</h2>
+  <p class="muted" style="max-width:66ch">
+    Two ways, and they hit the same endpoint. Pick the shell client unless you
+    have a reason not to - it is the one we test against every release. For how
+    many times to run it, see <a href="#cadence">how often to send</a>.
+  </p>
+
+  <h3 style="margin-top:22px">The shell client <span class="tag">recommended</span></h3>
+  <pre>curl -sL https://wrapped.gg/u | sh -s -- --key <u>wgg_live_…</u></pre>
+  <p class="muted small" style="max-width:66ch">
+    Run it from the folder holding <code>server.properties</code>. It reads
+    <code>level-name</code>, finds the stats folder on either 26.X or older
+    layouts, picks up <code>usercache.json</code>, flattens everything to gzipped
+    NDJSON in one pass and posts it. POSIX <code>sh</code>: no bash, no jq, no
+    node. It exits non-zero with a plain-English message on failure, so a panel
+    can surface the reason without parsing anything.
+  </p>
+  <p class="muted small">
+    Useful flags: <code>--world /path</code> to skip detection,
+    <code>--source your-panel</code> to tag the upload as yours in our metrics,
+    and <code>--quiet</code> for cron.
+  </p>
+
+  <h3 style="margin-top:26px">Posting it yourself</h3>
+  <div class="ep">
+    <span class="m">POST</span><span class="p">/v1/snapshots</span>
+    <span class="n">Authenticated with the server's <code>wgg_live_</code> key, not your
+      partner token.</span>
+  </div>
+<pre>POST /v1/snapshots
+Authorization: Bearer <u>wgg_live_…</u>
+Content-Type: application/x-ndjson
+Idempotency-Key: <i>sha256 of the body - makes a retry free</i>
+X-Wrapped-Source: <u>your-panel</u>
+
+<i># one line per player, gzipped - send the gzip as the raw body and do
+# not set Content-Encoding, or the edge will decompress it and the
+# upload will hang against a Content-Length that no longer fits:</i>
+{"uuid":"…","name":"Steve","stats":{"minecraft:custom":{"minecraft:play_time":…}}}
+{"uuid":"…","name":"Alex","stats":{…}}</pre>
+  <p class="muted small" style="max-width:66ch">
+    One JSON object per line, exactly the contents of each
+    <code>&lt;uuid&gt;.json</code> plus the name from
+    <code>usercache.json</code>. Line-oriented because a single
+    <code>{"players":{…}}</code> document for a big server does not fit in a
+    Worker's memory - see the shell client for a 40-line reference
+    implementation. The response is <code>201</code> with a
+    <code>snapshot_id</code>; poll <code>GET /v1/snapshots/:id</code> with the
+    same key, or ask <code>/v1/host/servers/:ref</code> later.
+  </p>
+
+  <h2 id="cadence">How often to send it</h2>
+  <p class="muted" style="max-width:66ch">
+    Minecraft's counters are cumulative and never reset, so the cadence decides
+    what the finished page is <i>about</i> - not how fresh it is. All three of
+    these are supported, and the customer is the one who should pick.
+  </p>
+
+  <div class="flow">
+    <div class="card f">
+      <b>Once</b>
+      <p>A complete Wrapped covering everything since the world was created.
+         Exact, just not a single year.</p>
+    </div>
+    <div class="card f">
+      <b>Twice <span class="tag soft">enough</span></b>
+      <p>One when you switch it on, one in December. That is the entire
+         requirement for a year in review.</p>
+    </div>
+    <div class="card f">
+      <b>Monthly</b>
+      <p>The same page as twice, plus it stays current all year and a broken key
+         surfaces in February instead of in December.</p>
+    </div>
+  </div>
+
+  <p class="muted" style="max-width:66ch">
+    A year window is <i>latest minus baseline</i>: the customer nominates one
+    earlier upload in their panel and everything before it drops out of the
+    totals. Two uploads is the minimum that makes that possible, and a schedule
+    is only a convenient way of guaranteeing the earlier one exists. A twelfth
+    upload buys nothing a second one did not.
+  </p>
+  <div class="note warn">
+    <b class="t">The early upload cannot be added later</b>
+    A baseline has to have been taken at the time. If the first upload a server
+    ever sends is in December, its page is "since the world was created" for
+    good - there is nothing earlier to subtract. Send one the day you enable it,
+    whatever cadence follows.
+  </div>
+
+  <h3 style="margin-top:26px">Customers who would rather not send on a schedule</h3>
+  <p class="muted" style="max-width:66ch">
+    Some will ask, and the answer is twice a year - offered plainly, not as a
+    downgrade. January and December produce a byte-for-byte equivalent Wrapped to
+    a monthly cron. What monthly adds is a record of <i>when</i> players were
+    active across twelve points in the year; once-and-once does not have that
+    shape, and for someone uneasy about it that is a reasonable thing to decline.
+  </p>
+  <p class="muted small" style="max-width:66ch">
+    Worth telling them alongside it: the client only ever opens the stats folder
+    and <code>usercache.json</code>, <code>--dry-run</code> reads everything and
+    sends nothing so they can inspect the exact payload first, and nothing is
+    public until they publish. If your panel exposes a cadence setting, make
+    <i>twice a year</i> one of the options rather than something they have to ask
+    support for.
+  </p>
+
+  <h2 id="claiming">Claim links</h2>
+  <p class="muted" style="max-width:66ch">
+    A server you create is held under your partner account until somebody claims
+    it. The <code>claim_url</code> from the create call hands it to whichever
+    Discord account opens it: they sign in once and the server appears in their
+    own panel, with nothing to paste.
+  </p>
+  <p class="muted" style="max-width:66ch">Once a customer has claimed a server:</p>
+  <ul class="ticks" style="margin:14px 0 18px">
+    <li>your key keeps working, so your scheduled uploads carry on untouched</li>
+    <li>they can rename it, unpublish it, upload their own icon and set a
+        year window</li>
+    <li>you can no longer rename, unpublish or delete it - their page, their call</li>
+    <li>they can revoke your key from their panel, which is the point of it
+        being revocable</li>
+  </ul>
+  <p class="muted small">
+    Links are single use and last 90 days. Show it as a button - "Manage my
+    Wrapped" - rather than printing the URL.
+  </p>
+
+  <h2 id="panels">Panel recipes</h2>
+
+  <details open>
+    <summary>Pterodactyl · scheduled task</summary>
+    <div class="body">
+      <p>The customer-facing half is a schedule on their own server, so it runs
+         with their permissions and shows up in their activity log:</p>
+      <p><b>Schedule</b> → <i>Wrapped upload</i>, monthly - or twice a year, if
+         that is what the customer picked
+         (<a href="#cadence">how often to send</a>). <b>Task</b> → <i>Send
+         command</i> does not work here (this is a shell command, not a game
+         command), so use a <b>Backup</b>-style task only if your build has
+         shell tasks enabled. On a standard install, run it from your own
+         daemon instead:</p>
+      <pre>docker exec <u>&lt;container&gt;</u> sh -c \
+  'cd /home/container &amp;&amp; curl -sL https://wrapped.gg/u | sh -s -- \
+     --key <u>wgg_live_…</u> --source pterodactyl --quiet'</pre>
+      <p>Or, if you would rather not touch containers, add it to the egg's
+         startup as a one-shot on first boot. The client is idempotent: sending
+         the same stats twice is deduplicated on our side and costs nothing.</p>
+      <p>If the customer does not want a standing schedule, the same
+         <code>docker exec</code> line run from a button - once now, once in
+         December - is the whole thing. Nothing about the page is worse for it.</p>
+      <p><b>Wiring the button:</b> add "Enable Wrapped" to your panel's server
+         view. On click, call <code>POST /v1/host/servers</code> with
+         <code>external_id</code> set to the Pterodactyl server UUID, store the
+         returned key in your own database (not in an egg variable - customers
+         can read those), create the schedule, then show the customer their
+         <code>url</code> and <code>claim_url</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Multicraft · scripts.conf + scheduled task</summary>
+    <div class="body">
+      <p>A Multicraft scheduled task cannot run a shell command. It runs a
+         <b>Multicraft command</b>, and the one command that reaches a shell is
+         <code>builtin:script</code>, which runs a script <i>you</i> registered in
+         <code>scripts.conf</code>. Customers cannot add scripts or edit that
+         file, which is the part that suits this well: the upload key never has to
+         sit anywhere a customer can read it.</p>
+      <p>Four pieces, done once per node. Enrolling a customer after that is one
+         file and one task - no config edit, no daemon restart.</p>
+
+      <p><b>1 · the script</b>, in the Multicraft base directory (the one holding
+         <code>multicraft.log</code>). Not in a server directory - a script under
+         <code>{SERVER_DIR}</code> is one the customer can rewrite over FTP:</p>
+      <pre><i># {BASE_DIR}/wrapped.sh - owned by the Multicraft user, chmod 750</i>
+#!/bin/sh
+set -eu
+
+<i># Multicraft exports every scripts.conf placeholder as an environment variable.</i>
+KEYFILE="$BASE_DIR/wrapped-keys/$SERVER_ID"
+[ -f "$KEYFILE" ] || exit 0     <i># not enrolled - nothing to do, quietly</i>
+
+<i># In the environment, not in --key: argv is readable in /proc by every
+# other user on the box.</i>
+WRAPPED_KEY=$(cat "$KEYFILE"); export WRAPPED_KEY
+
+cd "$SERVER_DIR"
+curl -sL https://wrapped.gg/u | sh -s -- --source multicraft --quiet</pre>
+      <p>Starting from <code>$SERVER_DIR</code> is all the client needs: it reads
+         <code>level-name</code> from <code>server.properties</code>, finds the
+         stats folder on 26.X and older layouts alike, and picks up
+         <code>usercache.json</code> and <code>server-icon.png</code> sitting next
+         to it. On the node it needs <code>curl</code>, <code>python3</code> and
+         outbound HTTPS, and nothing else - it never speaks to the running
+         server.</p>
+      <p class="muted small">
+        If you would rather not fetch a script on every run, save the client once
+        with <code>curl -sL https://wrapped.gg/u -o {BASE_DIR}/wrapped-upload.sh</code>
+        and end the script with <code>sh "$BASE_DIR/wrapped-upload.sh" --source
+        multicraft --quiet</code> instead. It is POSIX <code>sh</code> with no
+        dependencies of its own.
+      </p>
+
+      <p><b>2 · register it</b> in <code>scripts.conf</code>, which sits in the
+         base directory unless <code>multicraft.conf</code> points somewhere
+         else:</p>
+      <pre>[wrapped]
+servers=all
+command={BASE_DIR}/wrapped.sh</pre>
+      <p><code>servers=all</code> is fine here: the script exits without doing
+         anything for a server that has no key file, so this stays a one-time edit
+         however many customers enable it.</p>
+
+      <p><b>3 · the command</b>, under <b>Advanced</b> → <b>Commands</b>. Leave
+         <b>Chat</b> empty so no player can set it off in game, set <b>Run</b> to
+         <code>builtin:script wrapped</code>, and put the required role at the
+         highest you have.</p>
+
+      <p><b>4 · the task</b>, under <b>Advanced</b> → <b>Scheduled Tasks</b>. Name
+         it <i>Wrapped upload</i>, pick that command from the dropdown, set the
+         interval monthly - or twice a year, if that is what the customer picked
+         (<a href="#cadence">how often to send</a>) - and set it to run whether or
+         not players are online. The game server does not need to be running
+         either, because <code>builtin:script</code> is executed by the daemon
+         rather than sent into the console; the daemon does have to be up at the
+         time, the same caveat Multicraft notes for its <code>setup</code>
+         script.</p>
+
+      <p><b>Enrolling a server</b> is then just the key file. Call
+         <code>POST /v1/host/servers</code> with <code>external_id</code> set to
+         the Multicraft server id, write the returned <code>upload_key</code> to
+         <code>{BASE_DIR}/wrapped-keys/&lt;server id&gt;</code> - mode
+         <code>600</code>, owned by whichever user the daemon runs scripts as,
+         which on a Linux multiuser install is that server's own user - and create
+         the task. A key rotation rewrites that one file; a cancellation deletes
+         it and the script goes quiet by itself.</p>
+      <p>Using the Multicraft server id as <code>external_id</code> means you
+         never have to store one of our ids at all: address the server as
+         <code>ext:&lt;id&gt;</code> everywhere afterwards, and
+         <code>$SERVER_ID</code> in the script is that same number.</p>
+
+      <div class="note tip">
+        <b class="t">The first run</b>
+        Give the task a start time a minute out and no interval when a customer
+        first enables it. Multicraft runs it once, and that upload is the baseline
+        every year window is measured against - skip it and this server can never
+        have one. Two one-off tasks, one now and one in the last week of December,
+        are the whole thing for a customer who would rather not leave a schedule
+        in place.
+      </div>
+      <p class="muted small">
+        The same script can be registered as <code>_stopped</code> to upload on
+        every shutdown instead of on a schedule, but uploads are capped at
+        <a href="#limits">12 a day per server</a> and a restart loop would eat
+        that. If you go that way, stamp
+        <code>$BASE_DIR/wrapped-keys/$SERVER_ID.sent</code> with
+        <code>date +%Y-%m</code> after a successful run and exit early while it
+        still matches.
+      </p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Your own panel · the whole flow in pseudocode</summary>
+    <div class="body">
+      <pre><b>on customer clicks "Enable Wrapped":</b>
+  r = POST /v1/host/servers
+      { name: server.name, external_id: server.id }
+  db.save(server.id, r.upload_key)
+  run_now(server)                 <i>// so they see something today - and this is
+                                  // the baseline. skip it and a year window is
+                                  // never possible for this server again</i>
+  <b>if customer.wants_a_schedule:</b>   <i>// their call, not yours</i>
+    schedule_monthly(server, "curl -sL https://wrapped.gg/u | sh -s -- " +
+                             "--key " + r.upload_key + " --source myhost --quiet")
+  <b>else:</b>
+    remind(customer, "december")  <i>// one more run is the whole difference</i>
+  show(r.url, r.claim_url)
+
+<b>on customer clicks "Upload now":</b>
+  run_now(server)
+  poll GET /v1/host/servers/ext:{server.id} until last_snapshot.state != "queued"
+
+<b>on customer cancels or deletes the server:</b>
+  POST /v1/host/servers/ext:{server.id}/key   <i>// orphan the old key</i>
+  <i>// leave the page up unless they ask - it is their players' year</i></pre>
+    </div>
+  </details>
+
+  <h2 id="limits">Limits and errors</h2>
+  <div class="table-scroll">
+    <table class="stack prose">
+      <thead><tr><th>Limit</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Limit">Create calls</td><td data-label="Value">300 / hour / partner</td>
+            <td data-label="Notes">Ask before migrating a fleet and we will lift it for the window</td></tr>
+        <tr><td data-label="Limit">Servers</td><td data-label="Value">10,000 / partner</td>
+            <td data-label="Notes">Raised on request, no charge</td></tr>
+        <tr><td data-label="Limit">Uploads</td><td data-label="Value">12 / day / server</td>
+            <td data-label="Notes">This is an annual product; <a href="#cadence">twice a year</a> is enough and monthly is plenty</td></tr>
+        <tr><td data-label="Limit">Snapshot size</td><td data-label="Value">64 MB gzipped</td>
+            <td data-label="Notes">A 3,244-player server is 8 MB</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-scroll" style="margin-top:18px">
+    <table class="stack prose">
+      <thead><tr><th>Status</th><th>error</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Status">401</td><td data-label="error"><code>unauthorized</code></td>
+            <td data-label="Do">Wrong or revoked token. A <code>wgg_live_</code> key will also land here - it is not a partner token.</td></tr>
+        <tr><td data-label="Status">403</td><td data-label="error"><code>suspended</code></td>
+            <td data-label="Do">Your token is paused, not revoked. Nothing has been deleted and your customers' pages are still up - get in touch and we will lift it.</td></tr>
+        <tr><td data-label="Status">400</td><td data-label="error"><code>bad_external_id</code></td>
+            <td data-label="Do">Send your own id for the server. It is what makes create retry-safe.</td></tr>
+        <tr><td data-label="Status">409</td><td data-label="error"><code>claimed</code></td>
+            <td data-label="Do">The customer owns this one now. Uploads still work; nothing else does.</td></tr>
+        <tr><td data-label="Status">409</td><td data-label="error"><code>too_many</code></td>
+            <td data-label="Do">You hit your server limit. Ask.</td></tr>
+        <tr><td data-label="Status">429</td><td data-label="error"><code>rate_limited</code></td>
+            <td data-label="Do">Back off and retry; the message says which limit.</td></tr>
+        <tr><td data-label="Status">413</td><td data-label="error"><code>payload_too_large</code></td>
+            <td data-label="Do">Something other than stats got uploaded. The client never produces this.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="rules">What we ask of you</h2>
+  <ul class="ticks" style="margin:14px 0 18px">
+    <li><b>Ask the customer first.</b> These are their players' stats. A Wrapped
+        should be a button they press, never something switched on for them.</li>
+    <li><b>Show them the claim link.</b> They should be able to take the page
+        over without going through your support queue.</li>
+    <li><b>Let them choose the cadence.</b> Monthly is our suggestion, not a
+        requirement - <a href="#cadence">two uploads a year</a> produce the same
+        Wrapped. Anyone who would rather not send on a schedule should be able to
+        say so and still have a page.</li>
+    <li><b>Keep partner tokens off game servers.</b> One leaked token is every
+        customer you have.</li>
+    <li><b>Do not resell it.</b> It is free for you and free for them. Bundle it,
+        brand your own button however you like, but do not put it behind a price.</li>
+  </ul>
+  <p class="muted small" style="max-width:66ch">
+    We read the stat counters and the name that goes with each UUID. Never chat,
+    commands, logs, IPs, coordinates, builds or inventories - the shell client
+    only ever opens the stats folder and <code>usercache.json</code>, and you can
+    read the whole thing at <a href="/u">wrapped.gg/u</a> before you run it.
+  </p>
+
+  <h2 id="faq">FAQ</h2>
+
+  <details>
+    <summary>Does anything get installed on the game server?</summary>
+    <div class="body">
+      <p>No. There is no plugin, no mod and no agent. The shell client is a
+         single script that runs, reads files the server already wrote, posts
+         them and exits. Nothing is left behind and nothing has to keep step
+         with Minecraft versions.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What does it cost?</summary>
+    <div class="body">
+      <p>Nothing, for you or your customers. There is no revenue share, no
+         per-server fee and no paid tier to upsell. If that ever changes,
+         servers already created keep working.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I white-label it?</summary>
+    <div class="body">
+      <p>Half of it. Your panel is yours - call the button what you like, no
+         attribution required. The Wrapped page itself carries the customer's
+         name and icon, not ours, but the share cards end on "make your own free
+         at wrapped.gg", and that line stays: it is the only distribution this
+         has.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A customer moved hosts. What happens to their page?</summary>
+    <div class="body">
+      <p>If they claimed it, nothing - it is theirs, the URL is unchanged, and
+         they can keep uploading from the panel or the shell. If they never
+         claimed it, generate a claim link and send it to them on the way out.
+         Please do that rather than deleting it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Modded, proxied and Bedrock servers?</summary>
+    <div class="body">
+      <p>All fine. It reads files, so the loader is irrelevant - Vanilla, Paper,
+         Purpur, Fabric, Forge, NeoForge. Behind a BungeeCord or Velocity proxy,
+         point it at each backend server's own folder; each one has its own
+         stats. Geyser and Floodgate players are included and can search their
+         name with or without the prefix.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I test without touching a real customer?</summary>
+    <div class="body">
+      <p>Yes - create one with an <code>external_id</code> like
+         <code>test-1</code> and <code>"published": false</code>, upload your own
+         world's stats to it, look at the page, then
+         <code>DELETE</code> it. Nothing is public until you publish, and the
+         delete removes every upload and build with it.</p>
+    </div>
+  </details>
+
+  <div class="card cta-end" style="text-align:center;padding:28px 20px;margin-top:36px">
+    <h2 style="margin:0 0 10px">Want a token?</h2>
+    <p class="muted" style="max-width:46ch;margin:0 auto 20px">
+      Tell us your company, your panel software and rough server count. It takes
+      a day, and there is nothing to sign.
+    </p>
+    <a class="btn lg primary" href="https://discord.com/users/158577328874586112"
+       target="_blank" rel="noopener">Message Tehlo on Discord</a>
+  </div>
+
+  </div>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="in">
+    <div class="card foot-card">
+      <div class="grow">
+        <div class="t">Hosting providers</div>
+        <p>Put <span class="wgg">wrapped.gg</span> in your Pterodactyl or Multicraft panel with
+           one API call per server. Free, no revenue share, no branding of ours on your panel.</p>
+      </div>
+      <a class="btn" href="/hosts">Partner API &amp; docs</a>
+    </div>
+
+    <div class="foot-links">
+      <a class="brand" href="/">wrapped<span>.gg</span></a>
+      <nav>
+        <a href="/docs">Help</a>
+        <a href="/panel">Panel</a>
+        <a href="/upload">Upload</a>
+        <a href="/hosts">For hosting providers</a>
+        <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>Made with <span class="heart">&hearts;</span> by
+        <a href="https://discord.com/users/158577328874586112" target="_blank" rel="noopener">Tehlo</a></span>
+      <span>Not affiliated with Mojang AB or Microsoft.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

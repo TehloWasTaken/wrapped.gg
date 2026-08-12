@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Panel - wrapped.gg</title>
+<meta name="description" content="Set up your server's Wrapped in four steps." />
+<meta name="robots" content="noindex, follow" />
+<meta name="theme-color" content="#14141a" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/icon-48.png" type="image/png" sizes="48x48" />
+<link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="stylesheet" href="/assets/app.css" />
+<style>
+.server-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.server-row .who { min-width: 0; flex: 1 1 220px; }
+.server-row h3 { margin: 0 0 2px; }
+.server-row .ico { width: 40px; height: 40px; flex: 0 0 auto; object-fit: contain;
+  image-rendering: pixelated; }
+
+.linkbox { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; margin-bottom: 22px; }
+.linkbox .u {
+  flex: 1 1 260px; min-width: 0; display: flex; align-items: center; padding: 0 14px;
+  min-height: 44px; background: var(--inset); color: var(--green-hi);
+  font: 15px/1.4 var(--mono); overflow-x: auto; white-space: nowrap;
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+}
+@media (max-width: 560px) { .linkbox .btn { flex: 1; } }
+
+.logo-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.logo-prev {
+  width: 84px; height: 84px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--inset); color: var(--dim); font-size: 12px; text-align: center;
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+  overflow: hidden;
+}
+.logo-prev img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+body.signed-in #signedOut { display: none; }
+
+.tabs {
+  display: flex; margin-top: 6px;
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  background: var(--panel-2);
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+}
+.tabs::-webkit-scrollbar { display: none; }
+@media (min-width: 641px) { .tabs { position: sticky; top: 82px; z-index: 40; } }
+
+.tabs .t {
+  flex: 1 0 auto; scroll-snap-align: start;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px;
+  font: 500 14.5px/1 var(--sans); letter-spacing: .2px; white-space: nowrap;
+  color: var(--muted); background: transparent; cursor: pointer;
+  border: 0; border-right: 2px solid var(--bevel-lo);
+  transition: background .13s ease, color .13s ease, box-shadow .13s ease;
+}
+.tabs .t:last-child { border-right: 0; }
+.tabs .t:hover {
+  color: var(--text); background: rgba(255,255,255,.06);
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.35);
+}
+.tabs .t[aria-selected="true"] {
+  color: var(--green-hi); background: var(--inset); cursor: default;
+  box-shadow: inset 0 3px 9px rgba(0,0,0,.5), inset 0 -3px 0 var(--green);
+}
+.tabs .t:focus-visible {
+  color: var(--text); outline: none;
+  box-shadow: inset 0 0 0 3px var(--green);
+}
+.tabs .t[aria-selected="true"]:focus-visible {
+  color: var(--green-hi);
+  box-shadow: inset 0 0 0 3px var(--green), inset 0 3px 9px rgba(0,0,0,.5);
+}
+.tabs .t .dot {
+  width: 8px; height: 8px; flex: 0 0 auto; background: var(--gold);
+  box-shadow: 0 0 8px rgba(255,201,60,.55);
+}
+.tabs .t .dot[hidden] { display: none; }
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .tabs {
+    background: var(--glass-2);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  }
+  .tabs .t[aria-selected="true"] { background: var(--glass-in); }
+}
+
+.pane[hidden] { display: none; }
+.pane > :first-child { margin-top: 24px; }
+
+.det-head { margin-bottom: 16px; }
+.det-head h1 { margin: 0; }
+.det-head .pill { transform: translateY(-7px); }
+@media (min-width: 720px) { .det-head .pill { transform: translateY(-8.5px); } }
+
+.chart-wrap { overflow-x: auto; }
+.stat-block { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.embed-wrap {
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+  background: #050403; min-height: 60px;
+}
+</style>
+</head>
+<body class="app">
+
+<header class="bar">
+  <a class="brand" href="/">wrapped<span>.gg</span></a>
+  <div class="spacer"></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/docs">Help</a>
+    <a href="/upload">Upload</a>
+    <a href="/hosts">For hosts</a>
+    <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+  </nav>
+  <span id="who" class="dim" hidden></span>
+  <button class="ghost" id="logout" hidden>Sign out</button>
+</header>
+
+<main class="wrap narrow">
+
+  <section id="signedOut">
+    <h1>Set up your server's Wrapped</h1>
+    <p class="lede">
+      wrapped.gg turns the <code>stats</code> folder your Minecraft server already
+      writes into a year in review for every player on it. Four short steps, about
+      five minutes. Nothing is installed on your server, nothing runs alongside the
+      game, and it is free.
+    </p>
+    <a class="btn lg primary" href="/auth/login?next=/panel">
+      <span class="i-discord"></span>Sign in with Discord</a>
+    <p class="dim" style="margin-top:18px">
+      Discord only - there is no password to invent and nothing to confirm by email.
+    </p>
+
+    <div class="split2" style="margin-top:38px">
+      <div class="card">
+        <h3 style="color:var(--green-hi)">This is not a Discord login form</h3>
+        <ul class="ticks" style="margin-top:14px">
+          <li>The button sends you to <b>discord.com</b>. Check the address bar - if you
+              are ever typing a password somewhere other than Discord's own site, stop.</li>
+          <li>Discord asks you there whether to share your account with wrapped.gg, and
+              sends us a one-time code once you agree.</li>
+          <li>There is no password on wrapped.gg at all, so there is none for us to ask
+              for and none for anyone to steal.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--dim)">What Discord gives us</h3>
+        <ul class="ticks" style="margin-top:14px">
+          <li>One scope, <code>identify</code>: your username and avatar, so the panel
+              knows whose servers to show you</li>
+        </ul>
+        <ul class="ticks no" style="margin-top:10px">
+          <li>We cannot read your messages or see which servers you are in</li>
+          <li>We cannot post, join, or change anything on your account</li>
+          <li>We never see your email address or your password</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:26px;max-width:64ch;font-size:15px">
+      wrapped.gg is run by <a href="https://discord.com/users/158577328874586112"
+        target="_blank" rel="noopener">Tehlo</a>. It is not affiliated with Discord Inc.,
+      and not affiliated with Mojang AB or Microsoft. Questions before you sign in are
+      welcome - <a class="dc-link in-text" href="https://discord.gg/hPRGgWKpTF"
+        target="_blank" rel="noopener"><span class="i-discord"></span>ask in the support
+      Discord</a>, or read <a href="/docs">the setup docs</a> first.
+    </p>
+  </section>
+
+  <section id="signedIn" hidden>
+    <div class="row">
+      <h1 style="margin:0">Your servers</h1>
+      <div class="spacer"></div>
+      <button class="btn primary" id="newServer">Add a server</button>
+    </div>
+    <div id="serverList" class="grid stack-cards" style="margin-top:26px"></div>
+  </section>
+
+  <section id="wizard" class="wz" hidden>
+    <div class="rail" id="rail"></div>
+
+    <div class="wz-step" id="wzName" hidden>
+      <h1>What is your server called?</h1>
+      <p class="why">However your players know it. You can change this later.</p>
+
+      <label class="field" style="margin-top:0">
+        <span>Server name</span>
+        <input type="text" id="wName" placeholder="servername" maxlength="48"
+               autocomplete="off" />
+      </label>
+
+      <label class="field">
+        <span>Server icon <em>(optional, but it makes shared links look like yours)</em></span>
+      </label>
+      <div class="pick-logo">
+        <div class="box" id="wLogoBox" role="button" tabindex="0" aria-label="Choose a server icon">
+          add icon
+        </div>
+        <div style="flex:1 1 220px;min-width:0">
+          <p class="dim" style="margin:0">
+            Your <code>server-icon.png</code> is perfect - it is already square and
+            already in your server's main folder. Any size works.
+          </p>
+          <p class="dim" id="wLogoMsg" style="margin:8px 0 0"></p>
+        </div>
+        <input type="file" id="wLogoFile" accept="image/png,image/jpeg,image/webp" hidden />
+      </div>
+
+      <div id="wNameErr" hidden></div>
+
+      <div class="acts">
+        <button class="btn lg primary" id="wNameGo">Continue</button>
+        <button class="btn" id="wNameCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="wz-step" id="wzHow" hidden>
+      <h1>How do you want to send your stats?</h1>
+      <p class="why">
+        Both do exactly the same thing. Pick the first one unless you know you
+        have SSH access to the machine.
+      </p>
+      <div class="choices">
+        <button class="choice" id="wPickBrowser" type="button">
+          <span class="tag">EASIEST</span>
+          <b>From my computer</b>
+          <p>You download one file from your host's control panel and drop it here.
+             Works on Pterodactyl, Multicraft, and every panel we have seen.</p>
+        </button>
+        <button class="choice" id="wPickShell" type="button">
+          <b>With one command</b>
+          <p>You have SSH on the machine running the server. Paste one line and it
+             handles the rest.</p>
+        </button>
+      </div>
+      <div class="acts"><button class="btn" id="wHowBack">Back</button></div>
+    </div>
+
+    <div class="wz-step" id="wzUpload" hidden>
+      <h1>Add your stats</h1>
+      <p class="why">
+        In your host's file manager open <b>world</b>, tick the <b>stats</b> folder,
+        press <b>Archive</b> or <b>Compress</b>, and download the file it makes.
+        On Minecraft <b>26.X</b> and newer that folder is
+        <code>world/players/stats</code>; before that, <code>world/stats</code>.
+        Then drop it below. <a href="/docs" target="_blank" rel="noopener">Show me where that is</a>
+      </p>
+      <div id="wUploader"></div>
+      <p class="dim" style="margin-top:18px">
+        Cannot find the folder, or the upload will not take it?
+        <a class="dc-link in-text" href="https://discord.gg/hPRGgWKpTF" target="_blank"
+           rel="noopener"><span class="i-discord"></span>Ask in the support Discord</a> -
+        somebody there has seen your panel before.
+      </p>
+      <div class="acts"><button class="btn" id="wUpBack">Back</button></div>
+    </div>
+
+    <div class="wz-step" id="wzShell" hidden>
+      <h1>Run this on your server</h1>
+      <p class="why">
+        Open a terminal on the machine, go to your server's folder - the one with
+        <code>server.properties</code> in it - and paste this. Your key is already
+        in it.
+      </p>
+      <div class="cmd">
+        <div class="box" id="wCmd"></div>
+        <button class="btn" id="wCmdCopy" type="button">Copy</button>
+      </div>
+      <p class="dim">
+        It finds the world on its own, reads the files, and never touches the
+        running server. Safe with players online.
+      </p>
+      <div class="card" style="margin-top:22px">
+        <div class="waiting"><i></i> <span id="wWait">Waiting for your first upload…</span></div>
+      </div>
+      <div class="acts"><button class="btn" id="wShBack">Back</button></div>
+    </div>
+
+    <div class="wz-step" id="wzDone" hidden>
+      <h1 id="wDoneTitle">Your Wrapped is ready</h1>
+      <p class="why" id="wDoneSub"></p>
+
+      <div class="linkbox">
+        <div class="u" id="wLink"></div>
+        <button class="btn" id="wLinkCopy" type="button">Copy link</button>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <b id="wPubLabel">Not published yet</b>
+            <div class="sub">Nothing is public until you turn this on.</div>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn primary" id="wPublish">Publish</button>
+        </div>
+      </div>
+
+      <div class="note tip" style="margin-top:20px">
+        <b class="t">Now share it</b>
+        Post the link in your Discord. Every player types their name and gets their
+        own page, plus a card built for showing off.
+      </div>
+
+      <div class="acts">
+        <a class="btn lg" id="wView" target="_blank" rel="noopener">Open my page</a>
+        <button class="btn" id="wFinish">Back to my servers</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="detail" hidden>
+    <button class="btn sm" id="back" style="margin-bottom:20px">&larr; All servers</button>
+    <div class="row det-head">
+      <h1 id="dName"></h1>
+      <span class="pill" id="dPub">private</span>
+      <div class="spacer"></div>
+      <a class="btn sm" id="dView" target="_blank" rel="noopener">View page</a>
+    </div>
+
+    <div class="linkbox">
+      <div class="u" id="dUrl"></div>
+      <button class="btn" id="copyUrl" type="button">Copy link</button>
+    </div>
+
+    <div class="tabs" id="tabs" role="tablist" aria-label="Server settings">
+      <button class="t" type="button" role="tab" data-tab="overview"
+        id="tab-overview" aria-controls="pane-overview">Overview</button>
+      <button class="t" type="button" role="tab" data-tab="page"
+        id="tab-page" aria-controls="pane-page">Your page</button>
+      <button class="t" type="button" role="tab" data-tab="traffic"
+        id="tab-traffic" aria-controls="pane-traffic">Traffic</button>
+      <button class="t" type="button" role="tab" data-tab="embed"
+        id="tab-embed" aria-controls="pane-embed">Embed</button>
+      <button class="t" type="button" role="tab" data-tab="uploads"
+        id="tab-uploads" aria-controls="pane-uploads">Uploads<i class="dot" hidden></i></button>
+    </div>
+
+    <div class="pane" id="pane-overview" role="tabpanel" aria-labelledby="tab-overview" hidden>
+
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      <div class="card"><div class="stat-n" id="dPlayers"> - </div><div class="sub">players indexed</div></div>
+      <div class="card"><div class="stat-n" id="dSnaps"> - </div><div class="sub">uploads</div></div>
+      <div class="card"><div class="stat-n" id="dState"> - </div><div class="sub">latest build</div></div>
+    </div>
+
+    <h2>Publish</h2>
+    <div class="card row">
+      <div>
+        <b id="pubLabel">Not published</b>
+        <div class="sub">Nothing is public until you turn this on.</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn" id="pubToggle">Publish</button>
+    </div>
+
+    <h2>Update your stats</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:14px;font-size:15px">
+        Upload again any time - it rebuilds in place and your link never changes.
+      </p>
+      <div id="dUploader"></div>
+      <p class="dim" style="margin-top:18px">Or from a terminal on the machine:</p>
+      <div class="cmd">
+        <div class="box" id="shellCmd"></div>
+        <button class="btn sm" id="shellCopy" type="button">Copy</button>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="pane" id="pane-page" role="tabpanel" aria-labelledby="tab-page" hidden>
+
+    <h2>Server name</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:12px;font-size:15px">
+        Shown on your Wrapped page and on every preview card people share. Your
+        link never changes, so renaming cannot break anything you have posted.
+      </p>
+      <label class="field" style="margin:0">
+        <span>Name</span>
+        <input type="text" id="srvName" maxlength="48" autocomplete="off" />
+        <small>2 - 48 characters. However your players know it.</small>
+      </label>
+      <div class="row" style="margin-top:14px">
+        <button class="btn sm primary" id="nameSave">Save</button>
+        <span class="dim" id="nameMsg"></span>
+      </div>
+    </div>
+
+    <h2>Server logo</h2>
+    <div class="card">
+      <div class="logo-row">
+        <div class="logo-prev" id="logoPrev">no logo</div>
+        <div style="flex:1 1 240px;min-width:0">
+          <p class="muted" style="font-size:15px;margin-bottom:12px">
+            Shown on your Wrapped page and on every preview card people share.
+          </p>
+          <div class="row">
+            <button class="btn sm" id="logoPick">Choose image</button>
+            <button class="btn sm danger" id="logoDel" hidden>Remove</button>
+            <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" hidden />
+          </div>
+          <p class="dim" id="logoMsg" style="margin-top:10px"></p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Time window</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:12px;font-size:15px">
+        Minecraft's counters never reset, so one upload covers your whole world.
+        Nominate an earlier upload as the baseline and the Wrapped describes just
+        the period since then instead.
+      </p>
+      <label class="field" style="margin:0">
+        <span>Baseline</span>
+        <select id="baseline"></select>
+        <small>Leave as "all time" unless you want a specific window.</small>
+      </label>
+    </div>
+
+    <h2>World birthday</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:12px;font-size:15px">
+        The day this world was created. Nothing in a stats folder knows it -
+        <code>world/stats</code> is only written once somebody earns a counter, and the
+        file that does carry a creation date is not part of the upload. So it is
+        yours to set, or to leave blank.
+      </p>
+      <label class="field" style="margin:0">
+        <span>Created on <em>optional</em></span>
+        <input type="date" id="worldBorn" />
+        <small>Set it and your page counts the days - and on the anniversary it says so,
+          on the page and in the preview Discord draws when somebody posts the link.</small>
+      </label>
+      <div class="row" style="margin-top:14px">
+        <button class="btn sm primary" id="bornSave">Save</button>
+        <button class="btn sm" id="bornClear">Clear</button>
+        <span class="dim" id="bornMsg"></span>
+      </div>
+    </div>
+
+    <h2>Blocked players</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:12px;font-size:15px">
+        Banned accounts, alts, staff test characters - anyone you would rather your
+        Wrapped did not mention. A blocked player leaves every leaderboard, stops
+        counting towards the server totals and their own page stops answering. Your
+        Wrapped rebuilds from your latest upload the moment you block somebody, so it
+        lands within a minute.
+      </p>
+      <label class="field" style="margin:0">
+        <span>Find a player</span>
+        <input type="text" id="blkSearch" maxlength="32" autocomplete="off"
+               placeholder="Start typing a name" />
+        <small>Searches the players in your latest build.</small>
+      </label>
+      <div class="plist" id="blkResults" style="margin-top:10px" hidden></div>
+      <div id="blkListWrap" style="margin-top:20px">
+        <p class="dim" id="blkCount" style="margin-bottom:10px"></p>
+        <div class="plist" id="blkList" hidden></div>
+      </div>
+      <p class="dim" id="blkMsg" style="margin-top:12px"></p>
+    </div>
+
+    </div>
+
+    <div class="pane" id="pane-traffic" role="tabpanel" aria-labelledby="tab-traffic" hidden>
+
+    <h2>Traffic</h2>
+    <div class="card" id="anaCard">
+      <div class="stat-block" style="margin-bottom:20px">
+        <div><div class="stat-n" id="aViews"> - </div><div class="sub">page views (30d)</div></div>
+        <div><div class="stat-n" id="aPlayers"> - </div><div class="sub">player pages opened</div></div>
+        <div><div class="stat-n" id="aCards"> - </div><div class="sub">link previews shown</div></div>
+        <div><div class="stat-n" id="aEmbed"> - </div><div class="sub">views from your site</div></div>
+      </div>
+      <div id="chart" class="chart-wrap"></div>
+      <p class="dim" id="aNote" style="margin-top:14px"></p>
+    </div>
+
+    </div>
+
+    <div class="pane" id="pane-embed" role="tabpanel" aria-labelledby="tab-embed" hidden>
+
+    <h2>Put it on your website</h2>
+    <div class="card">
+      <p class="muted" style="margin-bottom:14px;font-size:15px">
+        Paste these two lines into your site and your players get their Wrapped
+        without leaving it - same search box, same cards, same everything.
+      </p>
+      <div class="cmd">
+        <div class="box" id="embedCode"></div>
+        <button class="btn sm" id="embedCopy" type="button">Copy</button>
+      </div>
+      <p class="dim" id="embedNote" style="margin:0 0 14px"></p>
+      <div id="embedPrev"></div>
+      <p class="dim" style="margin-top:12px">
+        That preview is the live embed, not a picture - try it.
+        For a fixed height, a version without the script, or a box for one
+        player, see <a href="/docs#embed">the embed guide</a>.
+      </p>
+    </div>
+
+    </div>
+
+    <div class="pane" id="pane-uploads" role="tabpanel" aria-labelledby="tab-uploads" hidden>
+
+    <h2>Upload keys</h2>
+    <div class="card">
+      <table id="keyTable" class="stack"><thead><tr>
+        <th>Name</th><th>Key</th><th>Last used</th><th></th>
+      </tr></thead><tbody></tbody></table>
+      <div class="row" style="margin-top:14px">
+        <button class="btn sm" id="newKey">New key</button>
+      </div>
+      <div id="newKeyOut" hidden>
+        <p class="dim" style="margin-top:14px">Copy this now - it is not shown again.</p>
+        <div class="key" id="newKeyVal"></div>
+      </div>
+    </div>
+
+    <h2>Uploads</h2>
+    <div class="card">
+      <table id="snapTable" class="stack"><thead><tr>
+        <th>When</th><th>Source</th><th>Players</th><th>Size</th><th>State</th>
+      </tr></thead><tbody></tbody></table>
+      <p class="empty" id="noSnaps" hidden>Nothing uploaded yet.</p>
+    </div>
+
+    <h2>Danger zone</h2>
+    <div class="card row">
+      <div><b>Delete this server</b><div class="sub">Removes every upload, build and player page. Cannot be undone.</div></div>
+      <div class="spacer"></div>
+      <button class="btn danger" id="del">Delete</button>
+    </div>
+
+    </div>
+
+    <h2>Need a hand</h2>
+    <div class="card dc-card">
+      <div class="grow">
+        <b>Support Discord</b>
+        <p>Something not building, a number that looks wrong, or an idea for an
+           award - bring it there and you get an answer from the people who wrote this.</p>
+      </div>
+      <a class="btn primary" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener">
+        <span class="i-discord"></span>Join the Discord</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="in">
+    <div class="card foot-card">
+      <div class="grow">
+        <div class="t">Hosting providers</div>
+        <p>Put <span class="wgg">wrapped.gg</span> in your Pterodactyl or Multicraft panel with
+           one API call per server. Free, no revenue share, no branding of ours on your panel.</p>
+      </div>
+      <a class="btn" href="/hosts">Partner API &amp; docs</a>
+    </div>
+
+    <div class="foot-links">
+      <a class="brand" href="/">wrapped<span>.gg</span></a>
+      <nav>
+        <a href="/docs">Help</a>
+        <a href="/panel">Panel</a>
+        <a href="/upload">Upload</a>
+        <a href="/hosts">For hosting providers</a>
+        <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>Made with <span class="heart">&hearts;</span> by
+        <a href="https://discord.com/users/158577328874586112" target="_blank" rel="noopener">Tehlo</a></span>
+      <span>Not affiliated with Mojang AB or Microsoft.</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { mountUploader } from '/assets/uploader.js';
+import { lineChart } from '/assets/chart.js';
+
+const $ = (id) => document.getElementById(id);
+const api = async (path, opts = {}) => {
+  const res = await fetch(path, { headers: { 'content-type': 'application/json' }, ...opts });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw Object.assign(new Error(body.message || `Something went wrong (${res.status})`),
+                                   { body, status: res.status });
+  return body;
+};
+const fmtDate = (t) => t ? new Date(t * 1000).toLocaleString(undefined,
+  { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ' - ';
+const fmtBytes = (b) => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB';
+const host = () => location.origin.replace(/^https?:\/\//, '');
+const shellCmd = (key) => `curl -sL ${location.origin}/u | sh -s -- --key ${key}`;
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+let me = null, current = null;
+
+function show(id) {
+  for (const s of ['signedOut', 'signedIn', 'wizard', 'detail']) $(s).hidden = s !== id;
+  document.body.classList.toggle('signed-in', id !== 'signedOut');
+  window.scrollTo(0, 0);
+}
+
+const TABS = ['overview', 'page', 'traffic', 'embed', 'uploads'];
+const tabBtn = (name) => $(`tab-${name}`);
+const setHash = (h) => { if (location.hash !== h) history.replaceState(null, '', h); };
+let tab = 'overview';
+let paneReady = {};
+
+function fillPane(name) {
+  if (!current || paneReady[name]) return;
+  paneReady[name] = true;
+  if (name === 'traffic') loadAnalytics(current.id);
+  if (name === 'embed') showEmbed(current);
+  if (name === 'page') loadBlocked(current.id);
+}
+
+function refreshPane(name) {
+  paneReady[name] = false;
+  if (tab === name) fillPane(name);
+}
+
+function setDot(name, on) {
+  const d = tabBtn(name).querySelector('.dot');
+  if (d) d.hidden = !on;
+}
+
+function selectTab(name, focus) {
+  tab = TABS.includes(name) ? name : 'overview';
+  for (const t of TABS) {
+    const on = t === tab;
+    tabBtn(t).setAttribute('aria-selected', on ? 'true' : 'false');
+    tabBtn(t).tabIndex = on ? 0 : -1;
+    $(`pane-${t}`).hidden = !on;
+  }
+  fillPane(tab);
+  if (focus) tabBtn(tab).focus();
+  tabBtn(tab).scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  const stick = window.innerWidth > 640 ? 94 : 12;
+  const top = $('tabs').getBoundingClientRect().top;
+  if (top < stick) window.scrollTo(0, window.scrollY + top - stick);
+}
+
+function goTab(name, focus) {
+  selectTab(name, focus);
+  if (current) setHash(`#/${encodeURIComponent(current.slug)}/${tab}`);
+}
+
+$('tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('.t');
+  if (b) goTab(b.dataset.tab);
+});
+
+$('tabs').addEventListener('keydown', (e) => {
+  const i = TABS.indexOf(tab);
+  const next =
+    e.key === 'ArrowRight' ? TABS[(i + 1) % TABS.length] :
+    e.key === 'ArrowLeft'  ? TABS[(i - 1 + TABS.length) % TABS.length] :
+    e.key === 'Home'       ? TABS[0] :
+    e.key === 'End'        ? TABS[TABS.length - 1] : null;
+  if (!next) return;
+  e.preventDefault();
+  goTab(next, true);
+});
+
+function applyHash() {
+  const m = /^#\/([^/]+)(?:\/([^/]+))?$/.exec(location.hash || '');
+  const s = m ? me.servers.find(x => x.slug === decodeURIComponent(m[1])) : null;
+  if (!s) { current = null; renderList(); return; }
+  const want = m[2] && TABS.includes(m[2]) ? m[2] : 'overview';
+  if (current && current.id === s.id) goTab(want);
+  else openServer(s, want);
+}
+
+window.addEventListener('hashchange', () => { if (me) applyHash(); });
+
+async function boot() {
+  try {
+    me = await api('/v1/me');
+  } catch (e) {
+    if (e.status === 401) { show('signedOut'); return; }
+    throw e;
+  }
+  $('who').textContent = me.user.username;
+  $('who').hidden = false;
+  $('logout').hidden = false;
+  if (!me.servers.length) startWizard(); else applyHash();
+}
+
+function renderList() {
+  show('signedIn');
+  setHash('#/');
+  const list = $('serverList');
+  list.innerHTML = '';
+  for (const s of me.servers) {
+    const el = document.createElement('div');
+    el.className = 'card server-row';
+    el.innerHTML =
+      `<img class="ico" src="${s.icon_key ? `/logo/${esc(s.slug)}.png` : '/assets/default-icon.png'}" alt="" />` +
+      `<div class="who">
+        <h3>${esc(s.name)}</h3>
+        <div class="sub">${esc(host())}/${esc(s.slug)} ·
+          ${s.live_players ? Number(s.live_players).toLocaleString() + ' players' : 'no upload yet'}</div>
+      </div>
+      <span class="pill ${s.published ? 'ok' : ''}">${s.published ? 'live' : 'private'}</span>
+      <button class="btn sm">Manage</button>`;
+    el.querySelector('button').addEventListener('click', () => {
+      location.hash = `#/${encodeURIComponent(s.slug)}`;
+    });
+    list.appendChild(el);
+  }
+}
+
+const RAIL = ['Server', 'Method', 'Stats', 'Share'];
+let wz = { step: 0, id: null, slug: null, key: null, logo: null, players: 0, published: false };
+let wzUploader = null, wzPoll = null;
+
+function drawRail() {
+  $('rail').innerHTML = RAIL.map((label, i) =>
+    `<div class="r ${i === wz.step ? 'at' : ''}">
+       <span class="badge ${i < wz.step ? 'done' : i === wz.step ? '' : 'idle'}">${i + 1}</span>
+       <span class="lbl">${label}</span>
+     </div>`).join('');
+}
+
+function wzShow(stepIndex, panel) {
+  wz.step = stepIndex;
+  drawRail();
+  for (const el of document.querySelectorAll('.wz-step')) el.hidden = el.id !== panel;
+  show('wizard');
+}
+
+function startWizard() {
+  wz = { step: 0, id: null, slug: null, key: null, logo: null, players: 0, published: false };
+  $('wName').value = '';
+  $('wLogoBox').textContent = 'add icon';
+  $('wLogoBox').classList.remove('has');
+  $('wLogoMsg').textContent = '';
+  $('wNameErr').hidden = true;
+  stopWzPoll();
+  wzShow(0, 'wzName');
+  setTimeout(() => $('wName').focus(), 50);
+}
+
+const wzError = (title, body) => {
+  const el = $('wNameErr');
+  el.hidden = false;
+  el.className = 'note stop';
+  el.innerHTML = `<b class="t">${title}</b>${body}`;
+};
+
+$('wNameGo').addEventListener('click', async () => {
+  const name = $('wName').value.trim();
+  if (name.length < 2) {
+    wzError('Your server needs a name', '<p>Two characters or more. Whatever your players call it.</p>');
+    $('wName').focus();
+    return;
+  }
+  $('wNameErr').hidden = true;
+  $('wNameGo').disabled = true;
+  $('wNameGo').textContent = 'Creating…';
+  try {
+    const made = await api('/v1/servers', { method: 'POST', body: JSON.stringify({ name }) });
+    wz.id = made.id; wz.slug = made.slug; wz.key = made.key;
+
+    if (wz.logo) {
+      try {
+        const res = await fetch(`/v1/servers/${wz.id}/logo`, {
+          method: 'POST', headers: { 'content-type': 'image/png' }, body: wz.logo,
+        });
+        if (!res.ok) throw new Error();
+      } catch {
+        console.warn('logo upload failed');
+      }
+    }
+    me = await api('/v1/me');
+    wzShow(1, 'wzHow');
+  } catch (e) {
+    wzError('That did not work', `<p>${esc(e.message)}</p><p>Try again in a moment.</p>`);
+  }
+  $('wNameGo').disabled = false;
+  $('wNameGo').textContent = 'Continue';
+});
+$('wName').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('wNameGo').click(); });
+$('wNameCancel').addEventListener('click', () => (me.servers.length ? renderList() : show('signedIn')));
+
+function squareTo256(file) {
+  return new Promise((resolve, reject) => {
+    const im = new Image();
+    im.onload = () => {
+      const S = 256;
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = S;
+      const c = cv.getContext('2d');
+      c.imageSmoothingEnabled = !(im.width < S || im.height < S);
+      const r = Math.min(S / im.width, S / im.height);
+      const w = Math.round(im.width * r), h = Math.round(im.height * r);
+      c.drawImage(im, (S - w) / 2, (S - h) / 2, w, h);
+      cv.toBlob(b => b ? resolve(b) : reject(new Error('Could not read that image')), 'image/png');
+      URL.revokeObjectURL(im.src);
+    };
+    im.onerror = () => reject(new Error('That file is not an image we can read.'));
+    im.src = URL.createObjectURL(file);
+  });
+}
+
+$('wLogoBox').addEventListener('click', () => $('wLogoFile').click());
+$('wLogoBox').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('wLogoFile').click(); }
+});
+$('wLogoFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    wz.logo = await squareTo256(f);
+    const box = $('wLogoBox');
+    box.innerHTML = '';
+    box.classList.add('has');
+    const im = new Image();
+    im.src = URL.createObjectURL(wz.logo);
+    im.alt = 'Server icon';
+    box.appendChild(im);
+    $('wLogoMsg').textContent = 'Looks good.';
+  } catch (err) {
+    $('wLogoMsg').textContent = err.message;
+  }
+  e.target.value = '';
+});
+
+$('wHowBack').addEventListener('click', () => wzShow(0, 'wzName'));
+
+$('wPickBrowser').addEventListener('click', () => {
+  wzShow(2, 'wzUpload');
+  if (!wzUploader) {
+    wzUploader = mountUploader($('wUploader'), {
+      getKey: () => wz.key,
+      onDone: ({ players }) => { wz.players = players; wzDone(); },
+    });
+  }
+});
+
+$('wPickShell').addEventListener('click', () => {
+  wzShow(2, 'wzShell');
+  $('wCmd').textContent = shellCmd(wz.key);
+  startWzPoll();
+});
+$('wUpBack').addEventListener('click', () => wzShow(1, 'wzHow'));
+$('wShBack').addEventListener('click', () => { stopWzPoll(); wzShow(1, 'wzHow'); });
+
+$('wCmdCopy').addEventListener('click', () =>
+  copyTo($('wCmdCopy'), shellCmd(wz.key), 'Copy', $('wCmd')));
+
+function startWzPoll() {
+  stopWzPoll();
+  wzPoll = setInterval(async () => {
+    try {
+      const d = await api(`/v1/servers/${wz.id}/snapshots`);
+      const ready = (d.snapshots || []).find(s => s.state === 'ready');
+      const failed = (d.snapshots || []).find(s => s.state === 'failed');
+      if (ready) {
+        wz.players = Number(ready.players) || 0;
+        stopWzPoll();
+        wzDone();
+      } else if (d.snapshots && d.snapshots.length) {
+        $('wWait').textContent = failed
+          ? `Last upload failed: ${failed.error || 'unknown error'}. Fix it and run the command again.`
+          : 'Upload received - building your Wrapped…';
+      }
+    } catch {}
+  }, 4000);
+}
+function stopWzPoll() { if (wzPoll) clearInterval(wzPoll); wzPoll = null; }
+
+async function wzDone() {
+  wzShow(3, 'wzDone');
+  $('wDoneSub').textContent = wz.players
+    ? `${wz.players.toLocaleString()} players are in it. Publish it and share the link.`
+    : 'Publish it and share the link.';
+  $('wLink').textContent = `${host()}/${wz.slug}`;
+  $('wView').href = `/${wz.slug}`;
+  setPub($('wPubLabel'), $('wPublish'), false);
+  me = await api('/v1/me').catch(() => me);
+}
+
+$('wLinkCopy').addEventListener('click', () =>
+  copyTo($('wLinkCopy'), `${location.origin}/${wz.slug}`, 'Copy link', $('wLink')));
+
+$('wPublish').addEventListener('click', async () => {
+  const next = !wz.published;
+  try {
+    await api(`/v1/servers/${wz.id}`, { method: 'PATCH', body: JSON.stringify({ published: next }) });
+    wz.published = next;
+    setPub($('wPubLabel'), $('wPublish'), next);
+    const s = me.servers.find(x => x.id === wz.id);
+    if (s) s.published = next ? 1 : 0;
+  } catch (e) { alert(e.message); }
+});
+
+$('wFinish').addEventListener('click', async () => {
+  me = await api('/v1/me').catch(() => me);
+  renderList();
+});
+
+$('newServer').addEventListener('click', startWizard);
+
+function setPub(labelEl, btnEl, pub) {
+  labelEl.textContent = pub ? 'Published - your link is live' : 'Not published yet';
+  btnEl.textContent = pub ? 'Unpublish' : 'Publish';
+  btnEl.classList.toggle('primary', !pub);
+}
+
+function setPubPill(pub) {
+  $('dPub').textContent = pub ? 'live' : 'private';
+  $('dPub').classList.toggle('ok', !!pub);
+}
+
+async function copyTo(btn, text, restore, selectEl) {
+  const was = restore || btn.textContent;
+  const done = (msg) => {
+    btn.textContent = msg;
+    setTimeout(() => { btn.textContent = was; }, 2200);
+  };
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return done('Copied');
+    }
+  } catch {}
+
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    const ok = document.execCommand('copy');
+    ta.remove();
+    if (ok) return done('Copied');
+  } catch {}
+
+  if (selectEl) {
+    const r = document.createRange();
+    r.selectNodeContents(selectEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
+  done('Press Ctrl+C');
+}
+
+let detailUploader = null;
+
+async function openServer(s, want) {
+  const sameServer = current && current.id === s.id;
+  current = s;
+  paneReady = {};
+  if (!sameServer) show('detail');
+  $('dName').textContent = s.name;
+  $('srvName').value = s.name;
+  $('nameMsg').textContent = '';
+  $('dUrl').textContent = `${host()}/${s.slug}`;
+  $('dView').href = `/${s.slug}`;
+  $('dPlayers').textContent = s.live_players ? Number(s.live_players).toLocaleString() : ' - ';
+  setPub($('pubLabel'), $('pubToggle'), s.published);
+  setPubPill(s.published);
+  setLogo(s.icon_key ? `/logo/${s.slug}.png?t=${Date.now()}` : null);
+  $('logoMsg').textContent = '';
+  goTab(want || 'overview');
+
+  const data = await api(`/v1/servers/${s.id}/snapshots`);
+  $('dSnaps').textContent = data.snapshots.length;
+  $('dState').textContent = data.snapshots[0] ? data.snapshots[0].state : ' - ';
+  setDot('uploads', !!data.snapshots[0] && data.snapshots[0].state === 'failed');
+
+  if (!detailUploader) {
+    detailUploader = mountUploader($('dUploader'), {
+      getKey: () => sessionKeys[current.id] || '',
+      onDone: () => openServer(current, tab),
+    });
+  }
+  $('shellCmd').textContent = shellCmd('loading your key...');
+  loadSessionKey(s.id);
+
+  const kt = $('keyTable').querySelector('tbody');
+  kt.innerHTML = data.keys.map(k => `
+    <tr>
+      <td data-label="Name">${esc(k.name)}</td>
+      <td data-label="Key"><code>${esc(k.prefix)}…</code></td>
+      <td data-label="Last used" class="dim">${k.revoked_at ? 'revoked' : fmtDate(k.last_used_at)}</td>
+      <td>${k.revoked_at ? '' : `<button class="btn sm danger" data-key="${k.id}">Revoke</button>`}</td>
+    </tr>`).join('');
+  kt.querySelectorAll('[data-key]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Revoke this key? Anything using it stops working immediately.')) return;
+    await api(`/v1/servers/${current.id}/keys/${b.dataset.key}`, { method: 'DELETE' });
+    openServer(current, tab);
+  }));
+
+  const st = $('snapTable').querySelector('tbody');
+  $('noSnaps').hidden = data.snapshots.length > 0;
+  st.innerHTML = data.snapshots.map(s2 => `
+    <tr>
+      <td data-label="When">${fmtDate(s2.received_at)}</td>
+      <td data-label="Source" class="dim">${esc(s2.source)}</td>
+      <td data-label="Players">${s2.players ? Number(s2.players).toLocaleString() : ' - '}</td>
+      <td data-label="Size" class="dim">${fmtBytes(s2.bytes)}</td>
+      <td data-label="State"><span class="pill ${s2.state === 'ready' ? 'ok' : s2.state === 'failed' ? 'bad' : 'work'}">${s2.state}</span>
+        ${s2.error ? `<div class="dim">${esc(s2.error)}</div>` : ''}</td>
+    </tr>`).join('');
+
+  const sel = $('baseline');
+  sel.innerHTML = '<option value="">All time (recommended)</option>' +
+    data.snapshots.filter(s2 => s2.state === 'ready')
+      .map(s2 => `<option value="${s2.id}">${fmtDate(s2.received_at)} · ${Number(s2.players).toLocaleString()} players</option>`).join('');
+  sel.value = current.baseline_snapshot_id || '';
+  sel.onchange = async () => {
+    await api(`/v1/servers/${current.id}`, {
+      method: 'PATCH', body: JSON.stringify({ baseline_snapshot_id: sel.value || null }),
+    });
+    alert('Saved. Upload again to rebuild with the new window.');
+  };
+
+  $('worldBorn').value = current.world_born_at
+    ? new Date(current.world_born_at * 1000).toISOString().slice(0, 10) : '';
+  $('bornMsg').textContent = '';
+}
+
+const embedSnippet = (slug) =>
+  `<div data-wrapped="${slug}"></div>\n` +
+  `<script src="${location.origin}/embed.js" async><\/script>`;
+
+function showEmbed(s) {
+  $('embedCode').textContent = embedSnippet(s.slug);
+  const host_ = $('embedPrev');
+  host_.innerHTML = '';
+  if (!s.published) {
+    $('embedNote').textContent =
+      'Publish above first - until then the box tells visitors there is nothing here.';
+    return;
+  }
+  $('embedNote').textContent = '';
+  const box = document.createElement('div');
+  box.className = 'embed-wrap';
+  box.setAttribute('data-wrapped', s.slug);
+  box.setAttribute('data-height', '520');
+  host_.appendChild(box);
+  if (window.wrappedgg) { window.wrappedgg.mount(box); return; }
+  const sc = document.createElement('script');
+  sc.src = '/embed.js';
+  sc.onload = () => window.wrappedgg && window.wrappedgg.mount(box);
+  document.head.appendChild(sc);
+}
+
+$('embedCopy').addEventListener('click', () =>
+  copyTo($('embedCopy'), embedSnippet(current.slug), 'Copy', $('embedCode')));
+
+async function saveName() {
+  const msg = $('nameMsg');
+  const name = $('srvName').value.trim();
+  if (name.length < 2 || name.length > 48) {
+    msg.textContent = 'Two characters or more, up to 48.';
+    return;
+  }
+  if (name === current.name) { msg.textContent = 'That is already the name.'; return; }
+  msg.textContent = 'Saving…';
+  try {
+    const updated = await api(`/v1/servers/${current.id}`, {
+      method: 'PATCH', body: JSON.stringify({ name }),
+    });
+    current.name = updated.name;
+    const inList = me.servers.find(x => x.id === current.id);
+    if (inList) inList.name = updated.name;
+    $('dName').textContent = updated.name;
+    $('srvName').value = updated.name;
+    msg.textContent = 'Saved. Shared cards refresh on the next view.';
+  } catch (e) {
+    msg.textContent = e.message;
+  }
+}
+$('nameSave').addEventListener('click', saveName);
+$('srvName').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); saveName(); }
+});
+
+async function saveBorn(value) {
+  const msg = $('bornMsg');
+  msg.textContent = 'Saving…';
+  try {
+    const updated = await api(`/v1/servers/${current.id}`, {
+      method: 'PATCH', body: JSON.stringify({ world_born_at: value }),
+    });
+    current.world_born_at = updated.world_born_at;
+    const inList = me.servers.find(x => x.id === current.id);
+    if (inList) inList.world_born_at = updated.world_born_at;
+    msg.textContent = value ? 'Saved.' : 'Cleared.';
+  } catch (e) {
+    msg.textContent = e.message;
+  }
+}
+$('bornSave').addEventListener('click', () => {
+  const v = $('worldBorn').value;
+  if (!v) { $('bornMsg').textContent = 'Pick a date first, or use Clear.'; return; }
+  saveBorn(v);
+});
+$('bornClear').addEventListener('click', () => { $('worldBorn').value = ''; saveBorn(null); });
+
+let blocked = [];
+let blkTimer = null;
+
+const blkRow = (uuid, name, note, action) => `
+  <div class="p">
+    <img src="/head/${encodeURIComponent(uuid)}.png" alt="" width="28" height="28" loading="lazy" />
+    <span class="who"><b>${esc(name)}</b><span class="when">${esc(note)}</span></span>
+    ${action}
+  </div>`;
+
+function renderBlocked() {
+  const list = $('blkList');
+  $('blkCount').textContent = blocked.length
+    ? `${blocked.length} blocked`
+    : 'Nobody is blocked - everyone who plays is on the page.';
+  list.hidden = !blocked.length;
+  list.innerHTML = blocked.map(b => blkRow(b.uuid, b.name, `blocked ${fmtDate(b.created_at)}`,
+    `<button class="btn sm" data-unblock="${esc(b.uuid)}">Remove</button>`)).join('');
+  list.querySelectorAll('[data-unblock]').forEach(btn =>
+    btn.addEventListener('click', () => unblock(btn)));
+}
+
+async function loadBlocked(serverId) {
+  blocked = [];
+  $('blkSearch').value = '';
+  $('blkResults').hidden = true;
+  $('blkResults').innerHTML = '';
+  $('blkMsg').textContent = '';
+  renderBlocked();
+  try {
+    const out = await api(`/v1/servers/${serverId}/blocked`);
+    if (!current || current.id !== serverId) return;
+    blocked = out.blocked;
+    renderBlocked();
+  } catch (e) {
+    $('blkMsg').textContent = e.message;
+  }
+}
+
+async function searchPlayers() {
+  const q = $('blkSearch').value.trim();
+  const box = $('blkResults');
+  if (!q) { box.hidden = true; box.innerHTML = ''; return; }
+
+  let out;
+  try {
+    out = await api(`/v1/servers/${current.id}/players?q=${encodeURIComponent(q)}`);
+  } catch (e) {
+    $('blkMsg').textContent = e.message;
+    return;
+  }
+  if ($('blkSearch').value.trim() !== q) return;
+
+  box.hidden = false;
+  if (!out.players.length) {
+    box.innerHTML = `<div class="p"><span class="who dim">Nobody on this server starts
+      with "${esc(q)}". Only players in your latest build can be blocked.</span></div>`;
+    return;
+  }
+  box.innerHTML = out.players.map(p => blkRow(p.uuid, p.name,
+    `${Math.round(p.playtime_h).toLocaleString()} hours played`,
+    p.blocked
+      ? '<span class="dim">blocked</span>'
+      : `<button class="btn sm danger" data-block="${esc(p.uuid)}" data-name="${esc(p.name)}">Block</button>`
+  )).join('');
+  box.querySelectorAll('[data-block]').forEach(btn =>
+    btn.addEventListener('click', () => block(btn)));
+}
+
+$('blkSearch').addEventListener('input', () => {
+  clearTimeout(blkTimer);
+  blkTimer = setTimeout(searchPlayers, 220);
+});
+
+const rebuildNote = (name, rebuilding) => rebuilding
+  ? `${name} is off your page. Rebuilding from your last upload now - give it a minute.`
+  : `${name} is blocked, and stays out from your first upload on.`;
+
+async function block(btn) {
+  const msg = $('blkMsg');
+  btn.disabled = true;
+  msg.textContent = 'Blocking…';
+  try {
+    const out = await api(`/v1/servers/${current.id}/blocked`, {
+      method: 'POST',
+      body: JSON.stringify({ uuid: btn.dataset.block, name: btn.dataset.name }),
+    });
+    blocked.unshift(out.blocked);
+    renderBlocked();
+    const done = document.createElement('span');
+    done.className = 'dim';
+    done.textContent = 'blocked';
+    btn.replaceWith(done);
+    msg.textContent = rebuildNote(out.blocked.name, out.rebuilding);
+  } catch (e) {
+    btn.disabled = false;
+    msg.textContent = e.message;
+  }
+}
+
+async function unblock(btn) {
+  const msg = $('blkMsg');
+  const uuid = btn.dataset.unblock;
+  const was = blocked.find(b => b.uuid === uuid);
+  btn.disabled = true;
+  msg.textContent = 'Removing…';
+  try {
+    const out = await api(`/v1/servers/${current.id}/blocked/${encodeURIComponent(uuid)}`,
+                          { method: 'DELETE' });
+    blocked = blocked.filter(b => b.uuid !== uuid);
+    renderBlocked();
+    msg.textContent = out.rebuilding
+      ? `${was ? was.name : 'That player'} is back on your page once the rebuild finishes.`
+      : `${was ? was.name : 'That player'} is no longer blocked.`;
+    searchPlayers();
+  } catch (e) {
+    btn.disabled = false;
+    msg.textContent = e.message;
+  }
+}
+
+const sessionKeys = {};
+async function loadSessionKey(id) {
+  if (!sessionKeys[id]) {
+    try {
+      const out = await api(`/v1/servers/${id}/session-key`, { method: 'POST' });
+      sessionKeys[id] = out.key;
+    } catch {
+      $('shellCmd').textContent = shellCmd('YOUR_KEY');
+      return;
+    }
+  }
+  if (current && current.id === id) $('shellCmd').textContent = shellCmd(sessionKeys[id]);
+}
+
+$('copyUrl').addEventListener('click', () =>
+  copyTo($('copyUrl'), `${location.origin}/${current.slug}`, 'Copy link', $('dUrl')));
+$('shellCopy').addEventListener('click', () =>
+  copyTo($('shellCopy'), $('shellCmd').textContent, 'Copy', $('shellCmd')));
+
+function setLogo(url) {
+  const box = $('logoPrev');
+  if (url) {
+    box.innerHTML = '';
+    const im = new Image();
+    im.alt = 'Server logo';
+    im.src = url;
+    box.appendChild(im);
+    $('logoDel').hidden = false;
+  } else {
+    box.innerHTML = '<img src="/assets/default-icon.png" alt="Default icon" />';
+    $('logoDel').hidden = true;
+  }
+}
+
+$('logoPick').addEventListener('click', () => $('logoFile').click());
+$('logoFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  $('logoMsg').textContent = 'Uploading…';
+  try {
+    const blob = await squareTo256(f);
+    const res = await fetch(`/v1/servers/${current.id}/logo`, {
+      method: 'POST', headers: { 'content-type': 'image/png' }, body: blob,
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.message || 'Upload failed');
+    current.icon_key = out.icon_key;
+    const s = me.servers.find(x => x.id === current.id);
+    if (s) s.icon_key = out.icon_key;
+    setLogo(`/logo/${current.slug}.png?t=${Date.now()}`);
+    $('logoMsg').textContent = 'Saved. Shared cards refresh on the next view.';
+  } catch (err) {
+    $('logoMsg').textContent = err.message;
+  }
+  e.target.value = '';
+});
+
+$('logoDel').addEventListener('click', async () => {
+  await api(`/v1/servers/${current.id}/logo`, { method: 'DELETE' });
+  current.icon_key = null;
+  const s = me.servers.find(x => x.id === current.id);
+  if (s) s.icon_key = null;
+  setLogo(null);
+  $('logoMsg').textContent = 'Removed.';
+});
+
+async function loadAnalytics(serverId) {
+  const note = $('aNote'), chart = $('chart');
+  chart.innerHTML = '';
+  note.textContent = '';
+  ['aViews', 'aPlayers', 'aCards', 'aEmbed'].forEach(k => $(k).textContent = ' - ');
+
+  let d;
+  try { d = await api(`/v1/servers/${serverId}/analytics`); }
+  catch { note.textContent = 'Could not load traffic right now.'; return; }
+
+  if (!d.available) { note.textContent = d.reason || 'Analytics is not available.'; return; }
+
+  $('aViews').textContent = Number(d.totals.views).toLocaleString();
+  $('aPlayers').textContent = Number(d.totals.player_views).toLocaleString();
+  $('aCards').textContent = Number(d.totals.cards).toLocaleString();
+  $('aEmbed').textContent = Number(d.totals.embed_views || 0).toLocaleString();
+
+  if (!d.totals.views) {
+    note.textContent = 'No visits yet. Share your link and check back.';
+    return;
+  }
+
+  chart.appendChild(lineChart(d.days, [
+    { values: d.series.views,        color: 'var(--green-hi)', label: 'All views' },
+    { values: d.series.player_views, color: 'var(--aqua)',     label: 'Player pages' },
+    { values: d.series.cards,        color: 'var(--gold)',     label: 'Link previews' },
+  ], chart.clientWidth));
+
+  if (d.miss_rate > 25) {
+    note.textContent =
+      `${d.miss_rate}% of name searches found nobody - players may be using names ` +
+      `that changed since your upload. Re-uploading refreshes them.`;
+  }
+}
+
+$('pubToggle').addEventListener('click', async () => {
+  const next = !current.published;
+  await api(`/v1/servers/${current.id}`, { method: 'PATCH', body: JSON.stringify({ published: next }) });
+  current.published = next;
+  setPub($('pubLabel'), $('pubToggle'), next);
+  setPubPill(next);
+  refreshPane('embed');
+  const s = me.servers.find(x => x.id === current.id);
+  if (s) s.published = next ? 1 : 0;
+});
+
+$('newKey').addEventListener('click', async () => {
+  const out = await api(`/v1/servers/${current.id}/keys`, {
+    method: 'POST', body: JSON.stringify({ name: 'Key' }),
+  });
+  $('newKeyOut').hidden = false;
+  $('newKeyVal').textContent = out.key;
+});
+
+$('del').addEventListener('click', async () => {
+  if (prompt(`Type the server name to delete it: ${current.name}`) !== current.name) return;
+  await api(`/v1/servers/${current.id}`, { method: 'DELETE' });
+  me = await api('/v1/me');
+  current = null;
+  renderList();
+});
+
+$('back').addEventListener('click', () => { current = null; renderList(); });
+$('logout').addEventListener('click', async () => {
+  await fetch('/auth/logout', { method: 'POST' });
+  location.href = '/';
+});
+
+boot().catch(e => { console.error(e); show('signedOut'); });
+</script>
+</body>
+</html>

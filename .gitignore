@@ -1,0 +1,13 @@
+node_modules/
+.wrangler/
+dist/
+
+# real bindings and secrets; copy wrangler.toml.example and fill it in
+wrangler.toml
+.dev.vars
+.env
+
+test/out/
+__pycache__/
+*.log
+.DS_Store

@@ -1,0 +1,55 @@
+{
+  "name": "wrapped-gg",
+  "version": "0.1.0",
+  "description": "Year-in-review pages for any Minecraft server, from the stats folder it already writes.",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+
+    "db:local": "wrangler d1 execute wrapped --local --file=./migrations/0001_init.sql",
+    "db:remote": "wrangler d1 execute wrapped --remote --file=./migrations/0001_init.sql",
+    "db:local:partners": "wrangler d1 execute wrapped --local --file=./migrations/0002_partners.sql",
+    "db:remote:partners": "wrangler d1 execute wrapped --remote --file=./migrations/0002_partners.sql",
+    "db:local:admin": "wrangler d1 execute wrapped --local --file=./migrations/0003_admin.sql",
+    "db:remote:admin": "wrangler d1 execute wrapped --remote --file=./migrations/0003_admin.sql",
+    "db:local:usercache": "wrangler d1 execute wrapped --local --file=./migrations/0004_usercache.sql",
+    "db:remote:usercache": "wrangler d1 execute wrapped --remote --file=./migrations/0004_usercache.sql",
+    "db:local:birthday": "wrangler d1 execute wrapped --local --file=./migrations/0005_birthday.sql",
+    "db:remote:birthday": "wrangler d1 execute wrapped --remote --file=./migrations/0005_birthday.sql",
+    "db:local:blocked": "wrangler d1 execute wrapped --local --file=./migrations/0006_blocked.sql",
+    "db:remote:blocked": "wrangler d1 execute wrapped --remote --file=./migrations/0006_blocked.sql",
+
+    "partner:add": "node scripts/add-partner.mjs",
+
+    "test": "npm run test:rename && npm run test:birthday && npm run test:blocked && npm run test:traffic && npm run test:embed && npm run test:panel && npm run test:served && npm run test:metrics && npm run test:seo && npm run test:usercache && npm run test:geyser && npm run test:legacy && npm run test:skin",
+    "test:rename": "node test/rename.mjs",
+    "test:birthday": "node test/birthday.mjs && python3 test/birthday-sql.py",
+    "test:blocked": "node test/blocked.mjs && python3 test/blocked-sql.py",
+    "test:traffic": "node test/traffic.mjs",
+    "test:embed": "node test/embed.mjs",
+    "test:panel": "node test/panel.mjs",
+    "test:served": "node test/served.mjs",
+    "test:metrics": "node test/metrics.mjs",
+    "test:seo": "node test/seo.mjs",
+    "test:usercache": "node test/usercache.mjs",
+    "test:geyser": "node test/geyser.mjs",
+    "test:legacy": "node test/legacy.mjs",
+    "test:skin": "node test/skin.mjs",
+    "test:movement": "node test/movement.mjs",
+    "test:og": "node test/og-preview.mjs",
+    "test:build": "node test/build-world.mjs",
+
+    "gen:og": "node scripts/gen-og.mjs",
+    "gen:legacy": "node scripts/gen-legacy.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
+    "fflate": "^0.8.3",
+    "satori": "^0.29.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.86.0"
+  }
+}

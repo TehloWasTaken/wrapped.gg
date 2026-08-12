@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<title>How to set up a Minecraft server Wrapped - wrapped.gg</title>
+<meta name="description" content="Set up a Wrapped for your Minecraft server in about five minutes: find the stats folder in your host's file manager, zip it, drop it in. Plus fixes for what goes wrong." />
+<link rel="canonical" href="https://wrapped.gg/docs" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="theme-color" content="#3ecf72" />
+<meta name="color-scheme" content="dark" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="wrapped.gg" />
+<meta property="og:title" content="How to set up a Minecraft server Wrapped" />
+<meta property="og:description" content="Find the stats folder, zip it, drop it in. That is the whole setup." />
+<meta property="og:url" content="https://wrapped.gg/docs" />
+<meta property="og:image" content="https://wrapped.gg/og.png?v=f30ad696" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to set up a Minecraft server Wrapped" />
+<meta name="twitter:description" content="Find the stats folder, zip it, drop it in. That is the whole setup." />
+<meta name="twitter:image" content="https://wrapped.gg/og.png?v=f30ad696" />
+
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/icon-48.png" type="image/png" sizes="48x48" />
+<link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="stylesheet" href="/assets/app.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "HowTo",
+      "name": "Set up wrapped.gg for your Minecraft server",
+      "description": "Zip the stats folder your Minecraft server already writes, drop it on wrapped.gg, and every player gets a year in review.",
+      "totalTime": "PT5M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Sign in and name your server",
+          "url": "https://wrapped.gg/docs#steps",
+          "text": "Sign in with Discord on the panel and type your server's name."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Zip the stats folder",
+          "url": "https://wrapped.gg/docs#steps",
+          "text": "In your host's file manager open world, tick the stats folder, and press Archive. Download the file it makes."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Drop it in",
+          "url": "https://wrapped.gg/docs#steps",
+          "text": "Drop the file on the setup page, add usercache.json so players have names, and press Upload."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Publish and share",
+          "url": "https://wrapped.gg/docs#steps",
+          "text": "Press Publish and post your link in your Discord."
+        }
+      ],
+      "@id": "https://wrapped.gg/docs#howto"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://wrapped.gg/docs#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "wrapped.gg",
+          "item": "https://wrapped.gg/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Setup guide",
+          "item": "https://wrapped.gg/docs"
+        }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://wrapped.gg/docs#webpage",
+      "url": "https://wrapped.gg/docs",
+      "name": "How to set up a Minecraft server Wrapped",
+      "isPartOf": {
+        "@id": "https://wrapped.gg/#website"
+      },
+      "breadcrumb": {
+        "@id": "https://wrapped.gg/docs#breadcrumb"
+      },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+
+<style>
+.big-steps { display: grid; gap: 14px; margin: 26px 0 8px; }
+.bstep {
+  display: flex; gap: 16px; align-items: flex-start; padding: 18px 20px;
+  background: var(--panel);
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+}
+.bstep .badge { width: 38px; height: 38px; font-size: 18px; flex: 0 0 auto; }
+.bstep h2 { margin: 0 0 6px; font-size: 17px; }
+.bstep p { margin: 0; color: var(--muted); font-size: 15px; }
+.bstep p + p { margin-top: 8px; }
+
+.tree {
+  font: 13.5px/1.9 var(--mono); background: var(--inset); color: var(--muted);
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+  padding: 14px 16px; margin: 16px 0; overflow-x: auto; white-space: pre;
+}
+.tree b { color: var(--green-hi); font-weight: 400; }
+.tree u { color: var(--gold); text-decoration: none; }
+.tree i { color: var(--dim); font-style: normal; }
+
+details {
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+  background: var(--panel); margin-bottom: 8px;
+}
+details > summary {
+  cursor: pointer; padding: 13px 16px; list-style: none;
+  font-family: 'Pixel', monospace; -webkit-font-smoothing: none; font-size: 14.5px;
+  display: flex; gap: 12px; align-items: center;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: '+'; color: var(--green-hi); flex: 0 0 auto; }
+details[open] > summary::before { content: '\2212'; }
+details > summary:hover { background: rgba(255,255,255,.04); }
+details .body { padding: 0 16px 16px; color: var(--muted); font-size: 15px; }
+details .body :last-child { margin-bottom: 0; }
+details .body ul { margin: 0 0 12px 20px; }
+details .body li { margin-bottom: 6px; }
+
+.snip {
+  font: 13.5px/1.9 var(--mono); background: var(--inset); color: var(--yellow);
+  border-style: solid; border-width: 3px;
+  border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+  padding: 14px 16px; margin: 16px 0; overflow-x: auto; white-space: pre;
+}
+.opts { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
+.opts th, .opts td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+.opts th { font-family: 'Pixel', monospace; -webkit-font-smoothing: none; font-size: 13px; }
+.opts td:first-child { font-family: var(--mono); font-size: 13px; color: var(--green-hi); white-space: nowrap; }
+.opts td { color: var(--muted); }
+@media (max-width: 560px) { .opts td:first-child { white-space: normal; } }
+
+.cta-end { text-align: center; padding: 28px 20px; margin-top: 36px; }
+.cta-end h2 { margin: 0 0 10px; }
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  details, .bstep {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  }
+  .tree { background: var(--glass-in); }
+}
+</style>
+</head>
+<body class="app">
+
+<header class="bar">
+  <a class="brand" href="/">wrapped<span>.gg</span></a>
+  <div class="spacer"></div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/docs" class="on">Help</a>
+    <a href="/upload">Upload</a>
+    <a href="/hosts">For hosts</a>
+    <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+  </nav>
+  <a class="btn sm primary" href="/panel">Add your server</a>
+</header>
+
+<main class="wrap narrow">
+  <h1>Setting it up</h1>
+  <p class="lede">
+    Everything <span class="wgg">wrapped.gg</span> needs is a folder your server already
+    writes. You need a Discord account and your host's file manager - no commands, no
+    config files, nothing to restart. About five minutes.
+  </p>
+
+  <div class="big-steps" id="steps">
+    <div class="bstep">
+      <span class="badge">1</span>
+      <div>
+        <h2>Start on the panel</h2>
+        <p>Sign in with Discord, type your server's name, add your icon.
+           <a href="/panel">Open the panel</a></p>
+      </div>
+    </div>
+    <div class="bstep">
+      <span class="badge">2</span>
+      <div>
+        <h2>Zip the stats folder</h2>
+        <p>In your host's file manager open <code>world</code>, tick the
+           <code>stats</code> folder, and press <b>Archive</b> (or
+           <b>Compress</b>). Download the file it makes - about 8&nbsp;MB.</p>
+        <p><b>On Minecraft 26.X and newer</b> that folder moved: it is
+           <code>world/players/stats</code>. On anything older it is still
+           <code>world/stats</code>. Either one works here.</p>
+      </div>
+    </div>
+    <div class="bstep">
+      <span class="badge">3</span>
+      <div>
+        <h2>Drop it in</h2>
+        <p>Drag that file onto the setup page. Add <code>usercache.json</code>
+           from your server's main folder too, so players have names.</p>
+      </div>
+    </div>
+    <div class="bstep">
+      <span class="badge">4</span>
+      <div>
+        <h2>Publish and post the link</h2>
+        <p>Press Publish, paste your link in your Discord, and everyone looks
+           themselves up.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="dim">That is the whole thing. Everything below is only if you get stuck.</p>
+
+  <div class="note tip">
+    <b class="t">The two files, and where they live</b>
+    <div class="tree">plugins/
+<b>world/</b>            <i>← your main world</i>
+  playerdata/
+  region/
+  <b>stats/</b>          <i>← this folder. zip it.</i>
+server.properties
+<u>usercache.json</u>    <i>← this file. out here, not in world/</i>
+server.jar</div>
+    <code>usercache.json</code> is what turns UUIDs into names. Without it every
+    player is a row of letters and numbers and nobody can find their own page.
+  </div>
+
+  <div class="note warn">
+    <b class="t">Minecraft 26.X moved the stats folder</b>
+    <p>From <b>Minecraft 26.X</b> onwards, per-player files live under a
+       <code>players</code> folder, so the path is
+       <code>world/players/stats</code>:</p>
+    <div class="tree"><b>world/</b>
+  <b>players/</b>
+    <b>stats/</b>        <i>← 26.X and newer</i>
+    advancements/
+  region/
+<i>world/stats/</i>       <i>← 25.X and older. still the path on most servers today.</i></div>
+    <p>You do not have to know which one you have: zip whichever
+       <code>stats</code> folder your file manager shows you, or drop the whole
+       <code>world</code> folder in and we will find it. The
+       <a href="#ssh">shell command</a> and the
+       <a href="/hosts">hosting-provider API</a> both check the new path first
+       and fall back to the old one.</p>
+  </div>
+
+  <h2 id="embed">Put it on your website</h2>
+  <p>
+    If you already have a site, you do not have to send people away from it. Paste
+    two lines and the same Wrapped runs inside your page: the same search box, the
+    same cards, the same share image. Nothing is different except the border around it.
+  </p>
+  <div class="snip">&lt;div data-wrapped="your-slug"&gt;&lt;/div&gt;
+&lt;script src="https://wrapped.gg/embed.js" async&gt;&lt;/script&gt;</div>
+  <p>
+    Your slug is the last part of your link - <code>wrapped.gg/<b>your-slug</b></code>.
+    The panel has the snippet with yours already filled in, next to a live preview of
+    the result. The <code>&lt;div&gt;</code> goes where you want the box; the script
+    can go anywhere on the page, and one copy covers as many boxes as you like.
+  </p>
+  <p>Once it is in, it takes care of itself:</p>
+  <ul>
+    <li>The box sizes itself to the search panel, and to the width you give it.</li>
+    <li>When somebody opens their year it goes full screen over your page, because a
+        story in a 600px box is not worth reading. Closing it puts them back on your
+        page where they were - so does the browser's back button.</li>
+    <li>The card still downloads, and still copies straight into Discord.</li>
+  </ul>
+
+  <table class="opts">
+    <thead><tr><th>Attribute</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>data-wrapped</td><td>Your slug. The only one you need.</td></tr>
+      <tr><td>data-player</td><td>Skip the search box and open one player's year -
+        <code>data-player="Notch"</code>. Good on a staff page.</td></tr>
+      <tr><td>data-height</td><td>A fixed height in pixels. Leave it out and the box
+        picks its own.</td></tr>
+      <tr><td>data-expand="off"</td><td>Keep everything inside the box instead of
+        going full screen. Give it at least 600px of height if you do.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note tip">
+    <b class="t">No script? Then just an iframe</b>
+    <p>Site builders that strip <code>&lt;script&gt;</code> tags usually still allow
+       an embed block. This works on its own - it only misses the automatic sizing
+       and the full-screen step:</p>
+    <div class="snip">&lt;iframe src="https://wrapped.gg/embed/your-slug"
+        style="width:100%;height:700px;border:0"
+        title="Wrapped" loading="lazy" allow="clipboard-write"&gt;&lt;/iframe&gt;</div>
+    <p>Keep <code>allow="clipboard-write"</code> - without it the "copy image"
+       button on the share card cannot reach the clipboard.</p>
+  </div>
+
+  <details>
+    <summary>Where does this work? Wix, Squarespace, Carrd, WordPress…</summary>
+    <div class="body">
+      <p>Anywhere you can paste HTML. Look for a block called <b>Embed</b>,
+         <b>Custom HTML</b>, <b>Code</b> or <b>HTML widget</b> and put the snippet
+         in it. On WordPress it is the <b>Custom HTML</b> block, not the paragraph
+         one. On Carrd it is <b>Embed</b> with the mode set to <b>Code</b>.</p>
+      <p>If your builder blocks scripts, use the iframe version above. If it blocks
+         iframes too - some free tiers do - link to your page instead; nothing else
+         will get through.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The box says "nothing here yet"</summary>
+    <div class="body">
+      <p>Either the slug is wrong or the page is not published. Copy the last part
+         of your own link from the panel - it ends in a short random code, and that
+         code is part of the slug.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it slow my site down?</summary>
+    <div class="body">
+      <p>The script is about 4&nbsp;KB, and about 1.5&nbsp;KB over the wire once it
+         is compressed. A box below the fold does not load
+         until somebody scrolls to it. Nothing runs on your page except sizing the
+         frame; everything else happens on our side.</p>
+      <p>We set no cookies from the embed. Views through it are counted the same way
+         as views on your Wrapped page, and your panel shows them separately so you
+         can see whether it is earning its space.</p>
+    </div>
+  </details>
+
+  <h2>If you get stuck</h2>
+
+  <details>
+    <summary>Where is the file manager on my host?</summary>
+    <div class="body">
+      <ul>
+        <li><b>Pterodactyl</b> (DedicatedMC, Bloom, Sparked, PebbleHost, most game
+            hosts) - the <b>Files</b> tab on the left. Open <code>world</code>, tick
+            <code>stats</code>, press <b>Archive</b> at the bottom, then download
+            the <code>.tar.gz</code> it creates.</li>
+        <li><b>Multicraft</b> (Apex, ShockByte) - <b>Files → FTP File Access</b>,
+            same path.</li>
+        <li><b>Aternos, Minehut, free hosts</b> - <b>Files</b>. If there is no
+            archive button, download the whole world instead; we only read the
+            stats out of it.</li>
+        <li><b>Your own VPS</b> - skip all of it, see the command below.</li>
+        <li><b>Realms</b> - not possible. Realms gives nobody access to the files.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>I don't have a "world" folder</summary>
+    <div class="body">
+      <p>It has been renamed. Open <code>server.properties</code> and find the
+         line starting <code>level-name=</code> - whatever follows it is your world
+         folder. The <code>_nether</code> and <code>_the_end</code> folders never
+         contain stats; only the main one does.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>It says there are no player stats in my file</summary>
+    <div class="body">
+      <p>Almost always the wrong folder got zipped. Go back to
+         <code>world</code>, tick the <code>stats</code> folder <i>itself</i>
+         rather than opening it first, and archive that.</p>
+      <p>If there is no <code>stats</code> folder directly inside
+         <code>world</code>, you are on <b>Minecraft 26.X or newer</b> - look in
+         <code>world/players/stats</code> instead.</p>
+      <p>A zip of the whole world works too, or even the whole server - we ignore
+         everything except the stats. What does not work is the
+         <code>advancements</code> folder, which looks similar and is not it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>My host has no archive or compress button</summary>
+    <div class="body">
+      <p>Download the whole world as a zip if your host offers that, and drop it
+         in as-is. Otherwise connect with FileZilla, drag the <code>stats</code>
+         folder to your desktop, and zip it there - right-click →
+         <b>Compress</b> on a Mac, or <b>Send to → Compressed (zipped) folder</b>
+         on Windows.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Everyone shows up as letters and numbers</summary>
+    <div class="body">
+      <p><code>usercache.json</code> was missing. It sits in your server's
+         <b>main</b> folder next to <code>server.properties</code>, not inside
+         <code>world/</code>. Upload again with it attached - the rebuild replaces
+         the old one and there is nothing to clean up.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>My server runs an old version of Minecraft</summary>
+    <div class="body">
+      <p>That is fine. Minecraft changed the shape of a stats file in 1.13, and
+         again further back in 1.8, and all three shapes are read here. A 1.7.10
+         file records blocks by number rather than by name; those numbers are
+         translated back into blocks, so the awards, the leaderboards and the
+         totals come out the same as they do for a server on the latest
+         release.</p>
+      <p>Two things genuinely are not in an old file, and nothing can invent
+         them: statistics Minecraft had not added yet - elytra distance before
+         1.9, anything about raids - and, on <b>1.7.5 and older</b>, the account
+         UUID. Those versions named each file after the player instead, and every
+         page here is keyed on the UUID, so those files are skipped unless
+         <code>usercache.json</code> can match them. From <b>1.7.6</b> onwards
+         Minecraft renamed the files itself and there is nothing to do.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A player types their name and nothing is found</summary>
+    <div class="body">
+      <ul>
+        <li><b>They changed their name</b> since your upload. Upload again.</li>
+        <li><b>They play on Bedrock.</b> Geyser adds a prefix, usually a dot.
+            Searching works with or without it, so try the bare name first.</li>
+        <li><b>They never played</b> on the world you uploaded.</li>
+      </ul>
+      <p>If lots of searches fail, the Traffic section of your panel says so.</p>
+    </div>
+  </details>
+
+  <details id="ssh">
+    <summary>I have SSH - is there a faster way?</summary>
+    <div class="body">
+      <p>Yes. From your server's folder, the one with
+         <code>server.properties</code> in it:</p>
+      <div class="key">curl -sL https://wrapped.gg/u | sh -s -- --key wgg_live_yourkey</div>
+      <p>It finds the world itself, needs only <code>curl</code> and
+         <code>python3</code>, and never touches the running server - safe with
+         players online. The panel offers this during setup with your key already
+         filled in.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I upload again later?</summary>
+    <div class="body">
+      <p>As often as you like, up to twelve times a day. Each upload rebuilds the
+         page in place. Your link never changes and links your players have
+         already shared keep working.</p>
+      <p>For a page describing <i>just this year</i> rather than all time, upload
+         twice - once now, once in December - then set the first as the
+         <b>baseline</b> under Time window. Minecraft's counters never reset, so
+         that subtraction is the only way to get a real window.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does this affect my server at all?</summary>
+    <div class="body">
+      <p>No. Nothing is installed, nothing runs alongside the game, there is no
+         plugin or mod to keep in step with Minecraft versions. You are copying
+         files your server already wrote, and you do not need to stop it to do so.</p>
+      <p>We read the stat counters and the name that goes with each UUID. We never
+         see chat, commands, logs, IPs, coordinates, builds or inventories.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Why are there no advancements?</summary>
+    <div class="body">
+      <p>They are 98% recipe-unlock noise - on our reference server, 6,003,511
+         entries of which 112,278 were real - in a 948&nbsp;MB folder. Counters
+         tell a much better story for a fraction of the effort.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>I run a hosting company and want this in my panel</summary>
+    <div class="body">
+      <p>There is an API for exactly that. One call creates a customer's Wrapped
+         and hands you an upload key; a scheduled task on the server sends the
+         stats. Your customers press a button in your panel and never see a key
+         or a setup guide.</p>
+      <p><a href="/hosts">The hosting-provider API, with copy-paste Pterodactyl
+         and Multicraft setups &rarr;</a></p>
+    </div>
+  </details>
+
+  <h2>Still stuck?</h2>
+  <div class="card dc-card">
+    <div class="grow">
+      <b>Support Discord</b>
+      <p>Every question on this page started as somebody asking it. If yours is not
+         here, ask it there - upload trouble, a number that looks wrong, or an award
+         you think should exist.</p>
+    </div>
+    <a class="btn primary" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener">
+      <span class="i-discord"></span>Join the Discord</a>
+  </div>
+
+  <div class="card cta-end">
+    <h2>Ready?</h2>
+    <p class="muted" style="max-width:42ch;margin:0 auto 20px">
+      Five minutes now, and every player on your server has a page waiting with
+      their name on it.
+    </p>
+    <a class="btn lg primary" href="/panel">Set up my server</a>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="in">
+    <div class="card foot-card">
+      <div class="grow">
+        <div class="t">Hosting providers</div>
+        <p>Put <span class="wgg">wrapped.gg</span> in your Pterodactyl or Multicraft panel with
+           one API call per server. Free, no revenue share, no branding of ours on your panel.</p>
+      </div>
+      <a class="btn" href="/hosts">Partner API &amp; docs</a>
+    </div>
+
+    <div class="foot-links">
+      <a class="brand" href="/">wrapped<span>.gg</span></a>
+      <nav>
+        <a href="/docs">Help</a>
+        <a href="/panel">Panel</a>
+        <a href="/upload">Upload</a>
+        <a href="/hosts">For hosting providers</a>
+        <a class="dc-link" href="https://discord.gg/hPRGgWKpTF" target="_blank" rel="noopener"><span class="i-discord"></span>Discord</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>Made with <span class="heart">&hearts;</span> by
+        <a href="https://discord.com/users/158577328874586112" target="_blank" rel="noopener">Tehlo</a></span>
+      <span>Not affiliated with Mojang AB or Microsoft.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
