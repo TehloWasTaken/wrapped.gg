@@ -105,9 +105,13 @@ await check('the app pages refuse to be framed at all', async () => {
 });
 
 await check('and the asset server cannot answer those paths before the worker does', async () => {
-  const toml = readFileSync(new URL('../wrangler.toml', import.meta.url), 'utf8');
+  let toml;
+  for (const name of ['../wrangler.toml', '../wrangler.toml.example']) {
+    try { toml = readFileSync(new URL(name, import.meta.url), 'utf8'); break; } catch {}
+  }
+  assert.ok(toml, 'no wrangler.toml or wrangler.toml.example to read');
   const list = /run_worker_first\s*=\s*\[([\s\S]*?)\]/.exec(toml);
-  assert.ok(list, 'no run_worker_first in wrangler.toml');
+  assert.ok(list, 'no run_worker_first in it');
   const first = [...list[1].matchAll(/"([^"]+)"/g)].map(m => m[1]);
   for (const p of ['/panel', '/panel.html', '/upload', '/upload.html',
                    '/docs', '/docs.html', '/hosts', '/hosts.html']) {
